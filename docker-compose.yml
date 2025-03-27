@@ -1,0 +1,36 @@
+
+services:
+  app:
+    build: .
+    container_name: proyectoEmpresaFrigorifica-app
+    ports:
+      - 8000:80
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: proyectoEmpresaFrigorifica-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: frigorifica_db
+      MYSQL_USER: user_admin
+      MYSQL_PASSWORD: 1234abc
+    ports:
+      - 33006:3306
+    networks:
+      - app-network
+    volumes:
+      - db_data:/var/lib/mysql
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
