@@ -1,36 +1,47 @@
-
 services:
   app:
     build: .
-    container_name: proyectoEmpresaFrigorifica-app
+    container_name: AlejandroFernandez-servizo
     ports:
-      - 8000:80
+      - 8080:80
     volumes:
       - .:/var/www/html
     networks:
-      - app-network
+      - AlejandroFernandez-network
     depends_on:
       - db
 
   db:
     image: mysql:5.7
-    container_name: proyectoEmpresaFrigorifica-db
+    container_name: AlejandroFernandez-db
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: frigorifica_db
+      MYSQL_DATABASE: proxectodb
       MYSQL_USER: user_admin
       MYSQL_PASSWORD: 1234abc
     ports:
-      - 33006:3306
+      - 3306:3306
     networks:
-      - app-network
+      - AlejandroFernandez-network
     volumes:
-      - db_data:/var/lib/mysql
+      - AlejandroFernandez-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: AlejandroFernandez-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: user_admin
+      PMA_PASSWORD: 1234abc
+    ports:
+      - 8081:80
+    networks:
+      - AlejandroFernandez-network
 
 networks:
-  app-network:
+  AlejandroFernandez-network:
     driver: bridge
 
 volumes:
-  db_data:
+  AlejandroFernandez-data:
     driver: local
