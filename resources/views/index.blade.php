@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trabajo empresa frigorífica</title>
+    <title>Trabajo Empresa Frigorífica</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 <body>
@@ -63,6 +63,7 @@
         </div>
     </div>
 </div>
+<h1 class="section-title">Bienvenido a la web de Frío Market</h1>
 <div class="image-block">
     <img src="{{ asset('img/tienda.jpg') }}" alt="Imagen destacada de FríoMarket" class="featured-image">
 </div>
@@ -70,34 +71,94 @@
 <div class="products-section">
     <div class="products-grid">
         <div class="product-card">
-            <img src="tienda.jpg" alt="Producto 1" class="product-image">
-            <h3 class="product-title">Producto 1</h3>
-            <p class="product-price">€10.99</p>
+            <img src="{{ asset('img/atun.jpg') }}" alt="Imagen atún" class="product-image">
+            <h3 class="product-title">Atún</h3>
+            <p class="product-price">€10.99/kg</p>
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <input type="number" value="1" min="1">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+                <button class="add-to-cart">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                </button>
+            </div>
         </div>
         <div class="product-card">
-            <img src="tienda.jpg" alt="Producto 2" class="product-image">
-            <h3 class="product-title">Producto 2</h3>
-            <p class="product-price">€12.50</p>
+            <img src="{{ asset('img/pulpo.jpg') }}" alt="Imagen pulpo" class="product-image">
+            <h3 class="product-title">Pulpo</h3>
+            <p class="product-price">€12.50/kg</p>
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <input type="number" value="1" min="1">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+                <button class="add-to-cart">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                </button>
+            </div>
         </div>
         <div class="product-card">
-            <img src="tienda.jpg" alt="Producto 3" class="product-image">
-            <h3 class="product-title">Producto 3</h3>
-            <p class="product-price">€8.75</p>
+            <img src="{{ asset('img/merluza.jpg') }}" alt="Imagen merluza" class="product-image">
+            <h3 class="product-title">Merluza</h3>
+            <p class="product-price">€8.75/kg</p>
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <input type="number" value="1" min="1">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+                <button class="add-to-cart">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                </button>
+            </div>
         </div>
         <div class="product-card">
-            <img src="tienda.jpg" alt="Producto 4" class="product-image">
-            <h3 class="product-title">Producto 4</h3>
-            <p class="product-price">€11.20</p>
+            <img src="{{ asset('img/calamarFresco.jpg') }}" alt="Imagen calamar" class="product-image">
+            <h3 class="product-title">Calamar</h3>
+            <p class="product-price">€11.20/kg</p>
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <input type="number" value="1" min="1">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+                <button class="add-to-cart">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                </button>
+            </div>
         </div>
         <div class="product-card">
-            <img src="tienda.jpg" alt="Producto 5" class="product-image">
-            <h3 class="product-title">Producto 5</h3>
-            <p class="product-price">€9.80</p>
+            <img src="{{ asset('img/camaronFresco.jpg') }}" alt="Imagen camarón" class="product-image">
+            <h3 class="product-title">Camarón</h3>
+            <p class="product-price">€9.80/kg</p>
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <input type="number" value="1" min="1">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+                <button class="add-to-cart">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                </button>
+            </div>
         </div>
         <div class="product-card">
-            <img src="tienda.jpg" alt="Producto 6" class="product-image">
-            <h3 class="product-title">Producto 6</h3>
-            <p class="product-price">€13.45</p>
+            <img src="{{ asset('img/mejillon.jpg') }}" alt="Imagen mejillones" class="product-image">
+            <h3 class="product-title">Mejillones</h3>
+            <p class="product-price">€13.45/kg</p>
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <input type="number" value="1" min="1">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+                <button class="add-to-cart">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                </button>
+            </div>
         </div>
     </div>
 </div>
