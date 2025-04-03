@@ -127,6 +127,7 @@ body {
     margin-top: 20px;
     text-align: center;
     padding: 20px;
+    border: 1px solid #1e81b0;
 }
 
 .featured-image {
@@ -273,7 +274,7 @@ body {
 .footer {
     width: 100%;
     background-color: #1e81b0;
-    padding: 40px 0px;
+    padding: 40px 0;
     display: flex;
     gap: 20px;
     justify-content: space-around;

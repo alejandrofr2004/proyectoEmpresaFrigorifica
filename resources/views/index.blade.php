@@ -73,8 +73,12 @@
         <div class="products-grid">
             <div class="product-card">
                 <img src="{{ asset('img/atun.jpg') }}" alt="Imagen atún" class="product-image">
-                <h3 class="product-title">Atún</h3>
-                <p class="product-price">€10.99/kg</p>
+                @if(isset($producto) && $producto)
+                    <h3 class="product-title">{{ $producto->nombre }}</h3>
+                    <p class="product-price">€{{ number_format($producto->precio, 2) }}/kg</p>
+                @else
+                    <p>No se encontró el producto.</p>
+                @endif
                 <div class="product-actions">
                     <div class="quantity-selector">
                         <input type="number" value="1" min="1">
