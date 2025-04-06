@@ -42,8 +42,8 @@
             </li>
         </ul>
         <div class="auth-buttons">
-            <button class="login">Iniciar sesión</button>
-            <button class="register">Registrarse</button>
+            <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
+            <a href="{{ route('register') }}" class="register">Registrarse</a>
         </div>
     </nav>
 </header>
@@ -58,7 +58,7 @@
             </ul>
         </nav>
         <div class="cart-container-wrapper">
-            <span class="products-counter">Productos cesta: 0</span>
+            <span class="products-counter">Precio: 0</span>
             <div class="cart-container">
                 <img src="{{ asset('img/carrito.png') }}" alt="Carrito de compras" class="cart-icon">
             </div>
@@ -68,103 +68,29 @@
     <div class="image-block">
         <img src="{{ asset('img/tienda.jpg') }}" alt="Imagen destacada de FríoMarket" class="featured-image">
     </div>
-    <h1 class="section-title">Productos más vendidos</h1>
+    <h1 class="section-title">Productos que podrían interesarte</h1>
     <div class="products-section">
         <div class="products-grid">
-            <div class="product-card">
-                <img src="{{ asset('img/atun.jpg') }}" alt="Imagen atún" class="product-image">
-                @if(isset($producto) && $producto)
+            @foreach ($productos as $producto)
+                <div class="product-card">
+                    <img src="{{ asset($producto->imagen_url) }}" alt="Imagen de {{ $producto->nombre }}" class="product-image">
+
                     <h3 class="product-title">{{ $producto->nombre }}</h3>
                     <p class="product-price">€{{ number_format($producto->precio, 2) }}/kg</p>
-                @else
-                    <p>No se encontró el producto.</p>
-                @endif
-                <div class="product-actions">
-                    <div class="quantity-selector">
-                        <input type="number" value="1" min="1">
-                        <button>-</button>
-                        <button>+</button>
+
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <input type="number" value="1" min="1">
+                            <button>-</button>
+                            <button>+</button>
+                        </div>
+                        <button class="add-to-cart">
+                            <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
+                        </button>
                     </div>
-                    <button class="add-to-cart">
-                        <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                    </button>
                 </div>
-            </div>
-            <div class="product-card">
-                <img src="{{ asset('img/pulpo.jpg') }}" alt="Imagen pulpo" class="product-image">
-                <h3 class="product-title">Pulpo</h3>
-                <p class="product-price">€12.50/kg</p>
-                <div class="product-actions">
-                    <div class="quantity-selector">
-                        <input type="number" value="1" min="1">
-                        <button>-</button>
-                        <button>+</button>
-                    </div>
-                    <button class="add-to-cart">
-                        <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                    </button>
-                </div>
-            </div>
-            <div class="product-card">
-                <img src="{{ asset('img/merluza.jpg') }}" alt="Imagen merluza" class="product-image">
-                <h3 class="product-title">Merluza</h3>
-                <p class="product-price">€8.75/kg</p>
-                <div class="product-actions">
-                    <div class="quantity-selector">
-                        <input type="number" value="1" min="1">
-                        <button>-</button>
-                        <button>+</button>
-                    </div>
-                    <button class="add-to-cart">
-                        <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                    </button>
-                </div>
-            </div>
-            <div class="product-card">
-                <img src="{{ asset('img/calamarFresco.jpg') }}" alt="Imagen calamar" class="product-image">
-                <h3 class="product-title">Calamar</h3>
-                <p class="product-price">€11.20/kg</p>
-                <div class="product-actions">
-                    <div class="quantity-selector">
-                        <input type="number" value="1" min="1">
-                        <button>-</button>
-                        <button>+</button>
-                    </div>
-                    <button class="add-to-cart">
-                        <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                    </button>
-                </div>
-            </div>
-            <div class="product-card">
-                <img src="{{ asset('img/camaronFresco.jpg') }}" alt="Imagen camarón" class="product-image">
-                <h3 class="product-title">Camarón</h3>
-                <p class="product-price">€9.80/kg</p>
-                <div class="product-actions">
-                    <div class="quantity-selector">
-                        <input type="number" value="1" min="1">
-                        <button>-</button>
-                        <button>+</button>
-                    </div>
-                    <button class="add-to-cart">
-                        <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                    </button>
-                </div>
-            </div>
-            <div class="product-card">
-                <img src="{{ asset('img/mejillon.jpg') }}" alt="Imagen mejillones" class="product-image">
-                <h3 class="product-title">Mejillones</h3>
-                <p class="product-price">€13.45/kg</p>
-                <div class="product-actions">
-                    <div class="quantity-selector">
-                        <input type="number" value="1" min="1">
-                        <button>-</button>
-                        <button>+</button>
-                    </div>
-                    <button class="add-to-cart">
-                        <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                    </button>
-                </div>
-            </div>
+            @endforeach
+
         </div>
     </div>
 </main>

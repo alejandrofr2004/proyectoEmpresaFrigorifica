@@ -10,9 +10,9 @@ class ProductController extends Controller
     public function showProduct()
     {
         // Obtener el producto con ID 1
-        $producto = Product::find(1);
+        $productos = Product::all();
 
         // Pasar el producto a la vista
-        return view('index', ['producto' => $producto]);
+        return view('index', ['productos' => $productos]);
     }
 }

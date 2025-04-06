@@ -56,18 +56,21 @@ body {
     gap: 10px;
 }
 
-.auth-buttons button {
+.auth-buttons a {
+    display: inline-block;
     background-color: #ffffff;
     color: #1e81b0;
     border: 2px solid #ffffff;
     border-radius: 5px;
     padding: 5px 15px;
     font-weight: bold;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
 }
 
-.auth-buttons button:hover {
+.auth-buttons a:hover {
     background-color: #76c7c0;
     color: #ffffff;
 }
