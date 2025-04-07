@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('producto', function (Blueprint $table) {
-            $table->renameColumn('image_url', 'imagen_url');
+        Schema::table('productos', function (Blueprint $table) {
+            $table->string('categoria')->after('imagen_url');
         });
-    }
+    } //
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('producto', function (Blueprint $table) {
-        $table->renameColumn('imagen_url', 'image_url');
+        Schema::table('productos', function (Blueprint $table) {
+            $table->dropColumn('categoria');
         });
     }
 };
