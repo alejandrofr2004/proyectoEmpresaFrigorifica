@@ -8,6 +8,12 @@ Route::get('/', [ProductController::class, 'showProduct']);
 Route::get('/admin', function () {
     return view('indexBootstrap');
 });
+Route::get('/shop', function () {
+    return view('shoppingCart');
+});
+/*Route::get('/category', function () {
+    return view('categoryProducts');
+});*/
 Route::get('/login', function () {
     return view('login');
 })->name('login');
