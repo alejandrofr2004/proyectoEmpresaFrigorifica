@@ -55,29 +55,30 @@
 
         <div class="cart-table">
             <div class="cart-header">
-                <div>Product</div>
-                <div>Format</div>
-                <div>Quantity</div>
-                <div>Unit Price</div>
-                <div>Price (VAT incl.)</div>
-                <div>Subtotal (VAT incl.)</div>
+                <div>Producto</div>
+                <div>Formato</div>
+                <div>Cantidad</div>
+                <div>Precio Unitario</div>
+                <div>Precio (IVA incl.)</div>
+                <div>Subtotal (IVA incl.)</div>
             </div>
 
             <div class="cart-row">
                 <div class="product-info">
-                    <img src="{{ asset('img/camaron.png') }}" alt="Gambardina" />
+                    <img src="{{ asset('img/camaronFresco.jpg') }}" alt="Gambardina" />
                     <span class="product-name">Gambardina</span>
                 </div>
                 <div class="product-format">Kg.</div>
-                <div class="product-quantity">
-                    <input type="number" value="1" min="1" class="quantity-input" />
-                    <div class="quantity-controls">
-                        <button class="qty-btn plus">+</button>
-                        <button class="qty-btn minus">−</button>
-                        <button class="qty-btn update">⟳</button>
-                        <button class="qty-btn delete">🗑️</button>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <input type="number" value="1" min="1">
+                            <button>-</button>
+                            <button>+</button>
+                        </div>
+                        <button class="add-to-cart">
+                            <img src="{{ asset('img/delete.png') }}" alt="Carrito" class="cart-image">
+                        </button>
                     </div>
-                </div>
                 <div class="unit-price">10.50</div>
                 <div class="price-vat">10.50</div>
                 <div class="subtotal">10.50</div>
@@ -85,16 +86,15 @@
         </div>
 
         <div class="cart-actions">
-            <button class="delete-order"><i>🗑️</i> Borrar pedido</button>
-            <div class="cart-summary">
-                <span>Total</span>
-                <span>10.50</span>
-                <span>10.50</span>
-            </div>
-            <button class="continue-btn"><i>🛒</i> Continuar pedido</button>
+            <button class="delete-order">
+                <img src="{{ asset('img/delete.png') }}" alt="Eliminar" class="icon" /> Eliminar pedido
+            </button>
+            <button class="card-summary">Total: 10.50</button>
+            <button class="continue-btn">
+                <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="icon" /> Continuar pedido
+            </button>
         </div>
     </main>
-
 
     <footer class="footer">
         <div class="logo">

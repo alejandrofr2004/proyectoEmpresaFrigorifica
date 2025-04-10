@@ -13,6 +13,6 @@ class ProductController extends Controller
         $productos = Product::all();
 
         // Pasar el producto a la vista
-        return view('index', ['productos' => $productos]);
+        return view('categoryProducts', ['productos' => $productos]);
     }
 }
