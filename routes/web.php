@@ -11,9 +11,9 @@ Route::get('/admin', function () {
 Route::get('/shop', function () {
     return view('shoppingCart');
 });
-/*Route::get('/category', function () {
-    return view('categoryProducts');
-});*/
+//Hacer un nuevo archivo para meter estas rutas
+Route::get('/category', [ProductController::class, 'showByCategory']);
+
 Route::get('/login', function () {
     return view('login');
 })->name('login');
