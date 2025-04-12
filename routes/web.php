@@ -12,7 +12,7 @@ Route::get('/shop', function () {
     return view('shoppingCart');
 });
 //Hacer un nuevo archivo para meter estas rutas
-Route::get('/category', [ProductController::class, 'showByCategory']);
+Route::get('/productos/categoria/{id}', [ProductController::class, 'showByCategory'])->name('products.byCategory');
 
 Route::get('/login', function () {
     return view('login');

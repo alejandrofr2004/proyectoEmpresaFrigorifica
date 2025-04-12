@@ -2,32 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Models\Product;
-use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function showProduct():View
+    public function showProduct(): \Illuminate\View\View
     {
-        // Obtener el producto con ID 1
+        // Traer todos los productos
         $productos = Product::all();
 
-        // Pasar el producto a la vista
-        return view('index', ['productos' => $productos]);
+        // Traer las categorías padre con sus subcategorías
+        $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
+
+        // Traer las subcategorías sin padre (Carnes, Verduras, etc.)
+        $categoriasSinPadre = Category::whereNull('padre_id')->whereIn('nombre', ['Carnes', 'Verduras', 'Precocinados', 'Conservas'])->get();
+
+        return view('index', [
+            'productos' => $productos,
+            'categoriasPadre' => $categoriasPadre,
+            'categoriasSinPadre' => $categoriasSinPadre,
+        ]);
     }
 
-    public function showByCategory(int $id): View
+    public function showByCategory($id)
     {
-        // Obtener productos que pertenecen a esa categoría o subcategoría
-        $productos = Product::where('category_id', $id)->get();
+        // Obtener la categoría por ID
+        $categoria = Category::findOrFail($id);
 
-        // Obtener el nombre de la categoría (si existe)
-        $categoria = Category::find($id);
+        // Obtener los productos que pertenecen a esta categoría
+        // Aquí puedes modificar según la relación en tu modelo Product
+        $productos = Product::where('category_id', $categoria->id)->get();
 
+        // Pasar los productos y la categoría a la vista
         return view('categoryProducts', [
             'productos' => $productos,
-            'titulo' => $categoria ? $categoria->name : 'Productos'
+            'categoria' => $categoria
         ]);
     }
 }
