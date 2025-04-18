@@ -13,34 +13,33 @@
     </div>
     <nav class="menu">
         <ul class="menu-links">
-            <li class="menu-item">
-                <a href="#pescados">Pescados</a>
-                <img src="{{ asset('img/pescado.png') }}" alt="Imagen de Pescados" class="menu-image">
-                <ul class="submenu">
-                    <li><a href="#atun">Atún</a></li>
-                    <li><a href="#merluza">Merluza</a></li>
-                    <li><a href="#sardinas">Sardinas</a></li>
-                </ul>
-            </li>
-            <li class="menu-item">
-                <a href="#cefalopodos">Cefalópodos</a>
-                <img src="{{ asset('img/calamar.png') }}" alt="Imagen de Cefalópodos" class="menu-image">
-                <ul class="submenu">
-                    <li><a href="#pulpo">Pulpo</a></li>
-                    <li><a href="#calamar">Calamar</a></li>
-                    <li><a href="#sepia">Sepia</a></li>
-                </ul>
-            </li>
-            <li class="menu-item">
-                <a href="#mariscos">Mariscos</a>
-                <img src="{{ asset('img/camaron.png') }}" alt="Imagen de Mariscos" class="menu-image">
-                <ul class="submenu">
-                    <li><a href="#camaron">Camarón</a></li>
-                    <li><a href="#ostras">Ostras</a></li>
-                    <li><a href="#mejillones">Mejillones</a></li>
-                </ul>
-            </li>
+            @foreach ($categoriasPadre as $categoria)
+                <li class="menu-item">
+                    <a href="{{ route('products.byCategory', $categoria->id) }}">
+                        {{ $categoria->nombre }}
+                    </a>
+
+                    @if ($categoria->imagen)
+                        <a href="{{ route('products.byCategory', $categoria->id) }}">
+                            <img src="{{ asset($categoria->imagen) }}" alt="Imagen de {{ $categoria->nombre }}" class="menu-image">
+                        </a>
+                    @endif
+
+                    @if ($categoria->children->isNotEmpty())
+                        <ul class="submenu">
+                            @foreach ($categoria->children as $subcategoria)
+                                <li>
+                                    <a href="{{ route('products.byCategory', $subcategoria->id) }}">
+                                        {{ $subcategoria->nombre }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </li>
+            @endforeach
         </ul>
+
         <div class="auth-buttons">
             <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
             <a href="{{ route('register') }}" class="register">Registrarse</a>
@@ -49,6 +48,17 @@
 </header>
 <main>
     <div class="extra-sections">
+        <nav class="menu">
+            <ul class="menu-links">
+                @foreach ($categoriasSinPadre as $categoria)
+                    <li>
+                        <a href="{{ route('products.byCategory', $categoria->id) }}">
+                            {{ $categoria->nombre }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </nav>
         <div class="cart-container-wrapper">
             <span class="products-counter">Precio: 0</span>
             <div class="cart-container">

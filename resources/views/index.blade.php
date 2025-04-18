@@ -15,10 +15,14 @@
         <ul class="menu-links">
             @foreach ($categoriasPadre as $categoria)
                 <li class="menu-item">
-                    <a href="{{ route('products.byCategory', $categoria->id) }}">{{ $categoria->nombre }}</a>
+                    <a href="{{ route('products.byCategory', $categoria->id) }}">
+                        {{ $categoria->nombre }}
+                    </a>
 
                     @if ($categoria->imagen)
-                        <img src="{{ asset($categoria->imagen) }}" alt="Imagen de {{ $categoria->nombre }}" class="menu-image">
+                        <a href="{{ route('products.byCategory', $categoria->id) }}">
+                            <img src="{{ asset($categoria->imagen) }}" alt="Imagen de {{ $categoria->nombre }}" class="menu-image">
+                        </a>
                     @endif
 
                     @if ($categoria->children->isNotEmpty())

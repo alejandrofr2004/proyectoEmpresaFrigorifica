@@ -10,5 +10,5 @@ class Product extends Model
     protected $table = 'productos';
 
     // Permitir asignación masiva en estos campos
-    protected $fillable = ['nombre', 'descripcion', 'precio', 'stock', 'image_url'];
+    protected $fillable = ['nombre', 'descripcion', 'precio', 'stock', 'imagen_url'];
 }

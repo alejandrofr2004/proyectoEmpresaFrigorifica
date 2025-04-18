@@ -3,11 +3,23 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 
-Route::get('/', [ProductController::class, 'showProduct']);
-
 Route::get('/admin', function () {
-    return view('indexBootstrap');
+    return view('admin');
 });
+
+Route::get('/admin/productos', [ProductController::class, 'index'])->name('showProducts');
+
+Route::get('/admin/productos/create', [ProductController::class, 'create'])->name('createProduct');
+Route::post('/admin/productos', [ProductController::class, 'store'])->name('storeProduct');
+
+Route::get('/admin/productos/{id}/edit', [ProductController::class, 'edit'])->name('editProduct');
+Route::put('/admin/productos/{id}', [ProductController::class, 'update'])->name('updateProduct');
+
+Route::delete('/admin/productos/{id}', [ProductController::class, 'destroy'])->name('deleteProduct');
+
+
+
+
 Route::get('/shop', function () {
     return view('shoppingCart');
 });

@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 class ProductController extends Controller
 {
-    public function showProduct(): \Illuminate\View\View
+    public function index()
+    {
+        $productos = Product::all();
+        return view('showProducts', compact('productos'));
+    }
+    public function showProduct(): View
     {
         // Traer todos los productos
-        $productos = Product::all();
+        $productos = Product::inRandomOrder()->take(6)->get();
 
         // Traer las categorías padre con sus subcategorías
         $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
@@ -21,23 +27,125 @@ class ProductController extends Controller
         return view('index', [
             'productos' => $productos,
             'categoriasPadre' => $categoriasPadre,
-            'categoriasSinPadre' => $categoriasSinPadre,
+            'categoriasSinPadre' => $categoriasSinPadre
         ]);
     }
 
     public function showByCategory($id)
     {
-        // Obtener la categoría por ID
+        // Buscar la categoría
         $categoria = Category::findOrFail($id);
+        // Traer las categorías padre con sus subcategorías
+        $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
 
-        // Obtener los productos que pertenecen a esta categoría
-        // Aquí puedes modificar según la relación en tu modelo Product
-        $productos = Product::where('category_id', $categoria->id)->get();
+        // Traer las subcategorías sin padre (Carnes, Verduras, etc.)
+        $categoriasSinPadre = Category::whereNull('padre_id')->whereIn('nombre', ['Carnes', 'Verduras', 'Precocinados', 'Conservas'])->get();
+        // Si tiene subcategorías (es una categoría padre)
+        if ($categoria->children()->exists()) {
+            // Obtener los IDs de la categoría padre y sus hijos
+            $idsCategorias = $categoria->children->pluck('id')->toArray();
+            $idsCategorias[] = $categoria->id; // incluir también la categoría padre
 
-        // Pasar los productos y la categoría a la vista
+            // Obtener los productos de esas categorías
+            $productos = Product::whereIn('categoria_id', $idsCategorias)->get();
+        } else {
+            // Si no tiene hijos, solo mostrar los productos de esa categoría
+            $productos = Product::where('categoria_id', $categoria->id)->get();
+        }
+
         return view('categoryProducts', [
             'productos' => $productos,
-            'categoria' => $categoria
+            'categoria' => $categoria,
+            'categoriasPadre' => $categoriasPadre,
+            'categoriasSinPadre' => $categoriasSinPadre
         ]);
     }
+
+    public function create()
+    {
+        $categorias = Category::all();
+        return view('editProduct', compact('categorias'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'precio' => 'required|numeric',
+            'stock' => 'required|integer',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categoria_id' => 'required|exists:categorias,id',
+        ]);
+
+        $imagenPath = null;
+
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $extension = $imagen->getClientOriginalExtension();
+            $nombreFormateado = strtolower(str_replace(' ', '_', $request->nombre));
+            $nombreImagen = $nombreFormateado . '.' . $extension;
+            $imagen->move(public_path('img'), $nombreImagen);
+            $imagenPath = 'img/' . $nombreImagen;
+        }
+
+        Product::create([
+            'nombre' => $request->nombre,
+            'precio' => $request->precio,
+            'stock' => $request->stock,
+            'imagen_url' => $imagenPath,
+            'categoria_id' => $request->categoria_id
+        ]);
+
+        return redirect()->route('showProducts')->with('success', 'Producto creado correctamente.');
+    }
+
+    public function edit($id)
+    {
+        $producto = Product::findOrFail($id);
+        $categorias = Category::all();
+
+        return view('editProduct', compact('producto', 'categorias'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $producto = Product::findOrFail($id);
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'precio' => 'required|numeric',
+            'stock' => 'required|integer',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categoria_id' => 'required|exists:categorias,id',
+        ]);
+
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $extension = $imagen->getClientOriginalExtension();
+            $nombreFormateado = strtolower(str_replace(' ', '_', $request->nombre));
+            $nombreImagen = $nombreFormateado . '.' . $extension;
+            $imagen->move(public_path('img'), $nombreImagen);
+            $producto->imagen_url = 'img/' . $nombreImagen;
+        }
+
+        $producto->update([
+            'nombre' => $request->nombre,
+            'precio' => $request->precio,
+            'stock' => $request->stock,
+            'categoria_id' => $request->categoria_id
+        ]);
+
+        $producto->save();
+
+        return redirect()->route('showProducts')->with('success', 'Producto actualizado correctamente.');
+    }
+
+    public function destroy($id)
+    {
+        $producto = Product::findOrFail($id);
+        $producto->delete();
+
+        return redirect()->route('showProducts')->with('success', 'Producto eliminado correctamente.');
+    }
+
 }

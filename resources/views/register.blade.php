@@ -63,14 +63,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="mt-4 mb-0">
-                                            <div class="d-grid"><a class="btn btn-skyblue btn-block"
-                                                    href="login.html">Create Account</a></div>
-                                        </div>
                                     </form>
                                 </div>
                                 <div class="card-footer text-center py-3">
-                                    <div class="small"><a href="login.html">Have an account? Go to login</a></div>
+                                    <div class="small"><a href="{{ route('login') }}">Need an account? Sign up!</a></div>
                                 </div>
                             </div>
                         </div>
