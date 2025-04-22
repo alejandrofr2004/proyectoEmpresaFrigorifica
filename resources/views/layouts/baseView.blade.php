@@ -16,7 +16,7 @@
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="index.html">
+    <a class="navbar-brand ps-3" href="{{ route('admin') }}">
         <img src="{{ asset('img/logo.png') }}" alt="Frío Market Admin Logo" style="height: 40px;">
     </a>
     <!-- Sidebar Toggle-->

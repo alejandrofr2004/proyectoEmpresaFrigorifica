@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 
+Route::get('/', [ProductController::class, 'showProduct'])->name('index');
+
 Route::get('/admin', function () {
     return view('admin');
-});
+})->name('admin');
 
 Route::get('/admin/productos', [ProductController::class, 'index'])->name('showProducts');
 
