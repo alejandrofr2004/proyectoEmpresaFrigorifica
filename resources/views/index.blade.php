@@ -9,7 +9,9 @@
 <body>
 <header class="header">
     <div class="logo">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+        <a href="{{ route('index') }}">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+        </a>
     </div>
     <nav class="menu">
         <ul class="menu-links">
@@ -41,7 +43,14 @@
         </ul>
 
         <div class="auth-buttons">
-            <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
+            @auth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="login btn btn-link">Cerrar sesión</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
+            @endauth
             <a href="{{ route('register') }}" class="register">Registrarse</a>
         </div>
     </nav>
@@ -66,7 +75,11 @@
             </div>
         </div>
     </div>
-    <h1 class="section-title">Bienvenido a la web de Frío Market</h1>
+    @auth
+        <h1 class="section-title">Bienvenido, {{ auth()->user()->name }}</h1>
+    @else
+        <h1 class="section-title">Bienvenido a la web de Frío Market</h1>
+    @endauth
     <div class="image-block">
         <img src="{{ asset('img/tienda.jpg') }}" alt="Imagen destacada de FríoMarket" class="featured-image">
     </div>
@@ -98,7 +111,9 @@
 </main>
 <footer class="footer">
     <div class="logo">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" />
+        <a href="{{ route('index') }}">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+        </a>
     </div>
     <p>Copyright © 2025 FrioMarket | Todos los derechos reservados</p>
     <div class="redes">

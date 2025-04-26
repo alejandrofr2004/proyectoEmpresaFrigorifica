@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
 
 Route::get('/', [ProductController::class, 'showProduct'])->name('index');
 
@@ -19,6 +22,13 @@ Route::put('/admin/productos/{id}', [ProductController::class, 'update'])->name(
 
 Route::delete('/admin/productos/{id}', [ProductController::class, 'destroy'])->name('deleteProduct');
 
+//Organizar todas por cosas, esto es categorías
+Route::get('/admin/categorias', [CategoryController::class, 'index'])->name('showCategories');
+Route::get('/admin/categorias/create', [CategoryController::class, 'create'])->name('createCategory');
+Route::post('/admin/categorias', [CategoryController::class, 'store'])->name('storeCategory');
+Route::get('/admin/categorias/{id}/edit', [CategoryController::class, 'edit'])->name('editCategory');
+Route::put('/admin/categorias/{id}', [CategoryController::class, 'update'])->name('updateCategory');
+Route::delete('/admin/categorias/{id}', [CategoryController::class, 'destroy'])->name('deleteCategory');
 
 
 
@@ -35,6 +45,20 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('register');
 })->name('register');
+
+
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+
+// Ruta para procesar el formulario de login
+Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+
+// Ruta para logout
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
 
 /* Lógica a seguir para el login y el register
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

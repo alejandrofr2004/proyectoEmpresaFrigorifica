@@ -13,45 +13,56 @@
 </head>
 
 <body class="bg-skyblue">
-    <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="card-header">
-                                    <img src="{{ asset('img/logo.png') }}" alt="Logo de la empresa" class="logo">
-                                    <h3 class="text-center font-weight-light my-4">Login</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputEmail" type="email"
-                                                placeholder="name@example.com" />
-                                            <label for="inputEmail">Email address</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputPassword" type="password"
-                                                placeholder="Password" />
-                                            <label for="inputPassword">Password</label>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a href="{{ route('register') }}">Need an account? Sign up!</a>
-                                            <a class="btn btn-skyblue" href="index.html">Login</a>
-                                        </div>
-                                    </form>
-                                </div>
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                                <img src="{{ asset('img/logo.png') }}" alt="Logo de la empresa" class="logo">
+                                <h3 class="text-center font-weight-light my-4">Login</h3>
+                            </div>
+                            <div class="card-body">
+                                <!-- Formulario de Login -->
+                                <form method="POST" action="{{ route('login') }}">
+                                    @csrf
+                                    <!-- Campo Email -->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="inputEmail" type="email" name="email"
+                                               placeholder="name@example.com" required />
+                                        <label for="inputEmail">Email address</label>
+                                        @error('email')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <!-- Campo Contraseña -->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="inputPassword" type="password" name="password"
+                                               placeholder="Password" required />
+                                        <label for="inputPassword">Password</label>
+                                        @error('password')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <!-- Enlace para registro y botón de login -->
+                                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                        <a href="{{ route('register') }}">Need an account? Sign up!</a>
+                                        <button type="submit" class="btn btn-skyblue">Login</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
-    <script src="{{ asset('template/js/scripts.js') }}"></script>
+<script src="{{ asset('template/js/scripts.js') }}"></script>
 </body>
 
 </html>

@@ -12,7 +12,9 @@
 <body>
     <header class="header">
         <div class="logo">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+            <a href="{{ route('index') }}">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+            </a>
         </div>
         <nav class="menu">
             <ul class="menu-links">
@@ -98,7 +100,9 @@
 
     <footer class="footer">
         <div class="logo">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo" />
+            <a href="{{ route('index') }}">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+            </a>
         </div>
         <p>Copyright © 2025 FrioMarket | Todos los derechos reservados</p>
         <div class="redes">
