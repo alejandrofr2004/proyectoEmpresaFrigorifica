@@ -44,14 +44,14 @@
 
         <div class="auth-buttons">
             @auth
-                <form method="POST" action="{{ route('logout') }}">
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
-                    <button type="submit" class="login btn btn-link">Cerrar sesión</button>
+                    <button type="submit" class="logout">Cerrar sesión</button>
                 </form>
             @else
                 <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
+                <a href="{{ route('register') }}" class="register">Registrarse</a>
             @endauth
-            <a href="{{ route('register') }}" class="register">Registrarse</a>
         </div>
     </nav>
 </header>
@@ -76,7 +76,7 @@
         </div>
     </div>
     @auth
-        <h1 class="section-title">Bienvenido, {{ auth()->user()->name }}</h1>
+        <h1 class="section-title">Bienvenido, {{ auth()->user()->first_name }}</h1>
     @else
         <h1 class="section-title">Bienvenido a la web de Frío Market</h1>
     @endauth

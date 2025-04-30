@@ -75,6 +75,23 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'categoria_id' => 'required|exists:categorias,id',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.string' => 'El nombre debe ser una cadena de texto.',
+            'nombre.max' => 'El nombre no puede tener más de 255 caracteres.',
+
+            'precio.required' => 'El precio es obligatorio.',
+            'precio.numeric' => 'El precio debe ser un número.',
+
+            'stock.required' => 'El stock es obligatorio.',
+            'stock.integer' => 'El stock debe ser un número entero.',
+
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif o svg.',
+            'imagen.max' => 'La imagen no debe superar los 2 MB.',
+
+            'categoria_id.required' => 'La categoría es obligatoria.',
+            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
         ]);
 
         $imagenPath = null;
@@ -117,6 +134,23 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'categoria_id' => 'required|exists:categorias,id',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.string' => 'El nombre debe ser una cadena de texto.',
+            'nombre.max' => 'El nombre no puede tener más de 255 caracteres.',
+
+            'precio.required' => 'El precio es obligatorio.',
+            'precio.numeric' => 'El precio debe ser un número.',
+
+            'stock.required' => 'El stock es obligatorio.',
+            'stock.integer' => 'El stock debe ser un número entero.',
+
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif o svg.',
+            'imagen.max' => 'La imagen no debe superar los 2 MB.',
+
+            'categoria_id.required' => 'La categoría es obligatoria.',
+            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
         ]);
 
         if ($request->hasFile('imagen')) {

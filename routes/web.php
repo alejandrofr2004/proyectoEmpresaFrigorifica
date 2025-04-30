@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', [ProductController::class, 'showProduct'])->name('index');
 
@@ -38,40 +39,21 @@ Route::get('/shop', function () {
 //Hacer un nuevo archivo para meter estas rutas
 Route::get('/productos/categoria/{id}', [ProductController::class, 'showByCategory'])->name('products.byCategory');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
-
-Route::get('/register', function () {
-    return view('register');
-})->name('register');
-
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-
 // Ruta para procesar el formulario de login
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-
 // Ruta para logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-
 
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
 
-/* Lógica a seguir para el login y el register
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+//Usuarios
 
-// Ruta para procesar el inicio de sesión (puedes omitirla si usas las predeterminadas de Laravel)
-Route::post('/login', [LoginController::class, 'login']);
-
-// Ruta para cerrar sesión
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// Ruta para la página de registro
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-
-// Ruta para procesar el registro (puedes omitirla si usas las predeterminadas de Laravel)
-Route::post('/register', [RegisterController::class, 'register']);
-*/
+Route::get('/admin/usuarios', [UserController::class, 'index'])->name('showUsers');
+Route::get('/admin/usuarios/create', [UserController::class, 'create'])->name('createUser');
+Route::post('/admin/usuarios', [UserController::class, 'store'])->name('storeUser');
+Route::get('/admin/usuarios/{id}/edit', [UserController::class, 'edit'])->name('editUser');
+Route::put('/admin/usuarios/{id}', [UserController::class, 'update'])->name('updateUser');
+Route::delete('/admin/usuarios/{id}', [UserController::class, 'destroy'])->name('deleteUser');

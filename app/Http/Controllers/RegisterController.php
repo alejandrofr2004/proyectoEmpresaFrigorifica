@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -32,7 +33,7 @@ class RegisterController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|min:9|max:15',
             'password' => 'required|string|confirmed|min:8',
         ], [
             'first_name.required' => 'El campo de nombre es obligatorio.',
@@ -50,6 +51,7 @@ class RegisterController extends Controller
 
             'phone.required' => 'El campo de teléfono es obligatorio.',
             'phone.string' => 'El teléfono debe ser una cadena de texto.',
+            'phone.min' => 'El teléfono debe tener al menos 9 dígitos.',
             'phone.max' => 'El teléfono no puede exceder los 15 caracteres.',
 
             'password.required' => 'Debes ingresar una contraseña.',
@@ -71,16 +73,18 @@ class RegisterController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
-            'telefono' => $request->phone,
-            'role' => 'cliente',
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
 
+        $user->assignRole('cliente');
+
         // Crear una entrada en la tabla de clientes
-        /*Cliente::create([
-            'user_id' => $user->id,
-            'direccion' => '',  // O puedes dejarla vacía si decides agregar direcciones después
-        ]);*/
+        Client::create([
+            'user_id'   => $user->id,
+            'telefono'  => $user->phone,
+            'direccion' => null  // Se completará más adelante al hacer un pedido
+        ]);
 
         // Redirigir al usuario a la página de inicio de sesión o a donde desees
         return redirect()->route('login')->with('success', 'Te has registrado correctamente. Por favor, inicia sesión.');

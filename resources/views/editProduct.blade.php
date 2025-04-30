@@ -70,11 +70,11 @@
                         </div>
                     </div>
 
-                    <div class="text-end">
-                        <a href="{{ route('showProducts') }}" class="btn btn-secondary me-2">Cancelar</a>
+                    <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary">
-                            {{ isset($producto) ? 'Actualizar Producto' : 'Crear Producto' }}
+                            {{ isset($producto) ? 'Actualizar producto' : 'Crear producto' }}
                         </button>
+                        <a href="{{ route('showProducts') }}" class="btn btn-secondary me-2">Cancelar</a>
                     </div>
                 </form>
             </div>

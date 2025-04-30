@@ -31,12 +31,13 @@
                                     <!-- Campo Email -->
                                     <div class="form-floating mb-3">
                                         <input class="form-control" id="inputEmail" type="email" name="email"
-                                               placeholder="name@example.com" required />
+                                               value="{{ old('email') }}" placeholder="name@example.com" required />
                                         <label for="inputEmail">Email address</label>
                                         @error('email')
                                         <span class="text-danger small">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <!-- Campo Contraseña -->
                                     <div class="form-floating mb-3">
                                         <input class="form-control" id="inputPassword" type="password" name="password"
@@ -46,12 +47,14 @@
                                         <span class="text-danger small">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <!-- Enlace para registro y botón de login -->
                                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                         <a href="{{ route('register') }}">Need an account? Sign up!</a>
                                         <button type="submit" class="btn btn-skyblue">Login</button>
                                     </div>
                                 </form>
+
                             </div>
                         </div>
                     </div>

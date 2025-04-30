@@ -67,8 +67,15 @@ body {
     flex-direction: column;
     gap: 10px;
 }
-
-.auth-buttons a {
+.auth-buttons .logout {
+    appearance: none;
+    font-family: inherit;
+    font-size: inherit;
+    padding: inherit;
+    height: auto;
+}
+.auth-buttons a,
+.auth-buttons .logout {
     display: inline-block;
     background-color: #ffffff;
     color: #1e81b0;
@@ -82,10 +89,13 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.auth-buttons a:hover {
+.auth-buttons a:hover,
+.auth-buttons .logout:hover {
     background-color: #76c7c0;
     color: #ffffff;
 }
+
+
 
 .extra-sections {
     display: flex;

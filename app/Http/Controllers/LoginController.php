@@ -38,27 +38,24 @@ class LoginController extends Controller
             'password.required' => 'Debes ingresar una contraseña.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
-        // Intentar autenticar al usuario
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
-            // Verificar el rol del usuario
-            $user = Auth::user();
 
-            if ($user->role === 'cliente') {
-                // Si el usuario tiene el rol 'cliente', redirigir a la página deseada para clientes
-                return redirect()->intended(route('index'));
-            } elseif ($user->role === 'admin') {
-                // Si el usuario tiene el rol 'admin', redirigir a la página deseada para administradores
-                return redirect()->intended(route('admin'));
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Si la autenticación es exitosa, verificar el rol del usuario
+            $user = Auth::user();  // Obtener el usuario autenticado
+
+            // Redirigir dependiendo del rol
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');  // Redirige al dashboard de admin
+            } elseif ($user->hasRole('empleado')) {
+                return redirect()->route('empleado.dashboard');  // Redirige al dashboard de empleado
             } else {
-                // Si el usuario no tiene rol reconocido, desautenticamos y mostramos error
-                Auth::logout();
-                return back()->withErrors(['email' => 'No tienes acceso a esta área.']);
+                return redirect()->route('index');  // Redirige a la página principal para clientes
             }
         }
 
         // Si la autenticación falla, redirigir al login con un mensaje de error
         return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
+            'email' => 'Las credenciales no coinciden.',
         ]);
     }
 
@@ -70,6 +67,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/login');
+        return redirect('/');
     }
 }
