@@ -95,7 +95,8 @@ class UserController extends Controller
         $usuario->last_name  = $request->last_name;
         $usuario->email      = $request->email;
         $usuario->phone      = $request->phone;
-        $usuario->role       = $request->role;
+
+        $usuario->assignRole($request->role);
 
         // Verifica si el campo 'password' tiene un valor lleno (no vacío ni nulo).
         // Si el campo 'password' tiene algún valor, se procederá a actualizar la contraseña

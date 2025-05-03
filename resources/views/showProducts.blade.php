@@ -18,9 +18,11 @@
             <div class="card-header">
                 <i class="fas fa-box me-1"></i>
                 Lista de productos
+                @role('admin')
                 <a href="{{ route('createProduct') }}" class="btn btn-success btn-sm float-end">
                     <i class="fas fa-plus-circle"></i> Añadir Producto
                 </a>
+                @endrole
             </div>
             <div class="card-body">
                 <table id="datatablesSimple" class="table table-bordered table-striped table-hover">
@@ -32,7 +34,9 @@
                         <th>Stock</th>
                         <th>Imagen</th>
                         <th>Id categoría</th>
+                        @role('admin')
                         <th>Acciones</th>
+                        @endrole
                     </tr>
                     </thead>
                     <tbody>
@@ -50,6 +54,7 @@
                                 @endif
                             </td>
                             <td>{{ $producto->categoria_id }}</td>
+                            @role('admin')
                             <td>
                                 <a href="{{ route('editProduct', $producto->id) }}" class="btn btn-warning btn-sm" title="Editar">
                                     <i class="fas fa-pencil-alt"></i>
@@ -62,6 +67,7 @@
                                     </button>
                                 </form>
                             </td>
+                            @endrole
                         </tr>
                     @endforeach
                     </tbody>

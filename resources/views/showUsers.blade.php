@@ -18,9 +18,11 @@
             <div class="card-header">
                 <i class="fas fa-users me-1"></i>
                 Lista de usuarios
+                @role('admin')
                 <a href="{{ route('createUser') }}" class="btn btn-success btn-sm float-end">
                     <i class="fas fa-plus-circle"></i> Añadir Usuario
                 </a>
+                @endrole
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-striped table-hover">
@@ -30,8 +32,11 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Email</th>
+                        <th>Rol</th>
                         <th>Teléfono</th>
+                        @role('admin')
                         <th>Acciones</th>
+                        @endrole
                     </tr>
                     </thead>
                     <tbody>
@@ -41,7 +46,9 @@
                             <td>{{ $usuario->first_name }}</td>
                             <td>{{ $usuario->last_name }}</td>
                             <td>{{ $usuario->email }}</td>
+                            <td>{{ $usuario->getRoleNames()->first()}}</td>
                             <td>{{ $usuario->phone ?? '—' }}</td>
+                            @role('admin')
                             <td>
                                 <a href="{{ route('editUser', $usuario->id) }}" class="btn btn-warning btn-sm">
                                     <i class="fas fa-pencil-alt"></i>
@@ -54,6 +61,7 @@
                                     </button>
                                 </form>
                             </td>
+                            @endrole
                         </tr>
                     @endforeach
                     </tbody>

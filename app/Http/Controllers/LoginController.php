@@ -45,9 +45,9 @@ class LoginController extends Controller
 
             // Redirigir dependiendo del rol
             if ($user->hasRole('admin')) {
-                return redirect()->route('admin.dashboard');  // Redirige al dashboard de admin
+                return redirect()->route('admin');  // Redirige al dashboard de admin
             } elseif ($user->hasRole('empleado')) {
-                return redirect()->route('empleado.dashboard');  // Redirige al dashboard de empleado
+                return redirect()->route('admin');  // Redirige al dashboard de empleado
             } else {
                 return redirect()->route('index');  // Redirige a la página principal para clientes
             }

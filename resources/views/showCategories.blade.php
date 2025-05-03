@@ -18,9 +18,11 @@
             <div class="card-header">
                 <i class="fas fa-tags me-1"></i>
                 Lista de categorías
+                @role('admin')
                 <a href="{{ route('createCategory') }}" class="btn btn-success btn-sm float-end">
                     <i class="fas fa-plus-circle"></i> Añadir Categoría
                 </a>
+                @endrole
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-striped table-hover">
@@ -30,7 +32,9 @@
                         <th>Nombre</th>
                         <th>Padre</th>
                         <th>Imagen</th>
+                        @role('admin')
                         <th>Acciones</th>
+                        @endrole
                     </tr>
                     </thead>
                     <tbody>
@@ -46,6 +50,7 @@
                                     <span class="text-muted">Sin imagen</span>
                                 @endif
                             </td>
+                            @role('admin')
                             <td>
                                 <a href="{{ route('editCategory', $categoria->id) }}" class="btn btn-warning btn-sm">
                                     <i class="fas fa-pencil-alt"></i>
@@ -58,6 +63,7 @@
                                     </button>
                                 </form>
                             </td>
+                            @endrole
                         </tr>
                     @endforeach
                     </tbody>

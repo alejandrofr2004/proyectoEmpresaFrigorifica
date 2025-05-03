@@ -393,6 +393,14 @@ button:not(:disabled),
   cursor: pointer;
 }
 
+.no-hover:hover {
+    text-decoration: none !important;
+    background-color: transparent !important;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+
 ::-moz-focus-inner {
   padding: 0;
   border-style: none;
@@ -417,6 +425,7 @@ legend {
   font-size: calc(1.275rem + 0.3vw);
   line-height: inherit;
 }
+
 @media (min-width: 1200px) {
   legend {
     font-size: 1.5rem;
@@ -11039,15 +11048,15 @@ body {
   position: relative;
 }
 .nav-link {
-  color: white !important; 
+  color: white !important;
 }
 
 .nav-link i {
-  color: white !important; 
+  color: white !important;
 }
 
 .nav-link::after {
-  color: white; 
+  color: white;
 }
 .sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {
   font-size: 0.9rem;

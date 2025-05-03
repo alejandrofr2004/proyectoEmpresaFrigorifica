@@ -43,8 +43,15 @@
         </ul>
 
         <div class="auth-buttons">
-            <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
-            <a href="{{ route('register') }}" class="register">Registrarse</a>
+            @auth
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="logout">Cerrar sesión</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
+                <a href="{{ route('register') }}" class="register">Registrarse</a>
+            @endauth
         </div>
     </nav>
 </header>
