@@ -10,7 +10,7 @@ class PermissionMiddleware
     public function handle($request, Closure $next, $permission)
     {
         if (!Auth::check() || !Auth::user()->can($permission)) {
-            abort(403, 'No tienes permisos para acceder a esta ruta.');
+            return response()->view('403', [], 403);
         }
 
         return $next($request);
