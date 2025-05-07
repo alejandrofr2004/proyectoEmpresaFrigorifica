@@ -6,6 +6,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CartController;
+use Illuminate\Http\Request;
 
 Route::get('/', [ProductController::class, 'showProduct'])->name('index');
 
@@ -40,11 +42,10 @@ Route::middleware(['role:admin|empleado'])->group(function () {
     Route::delete('/admin/categorias/{id}', [CategoryController::class, 'destroy'])->name('deleteCategory');
 });
 
+//Carrito
+Route::post('/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
+Route::get('/shopping-cart', [CartController::class, 'showCart'])->name('shopping.cart');
 
-
-Route::get('/shop', function () {
-    return view('shoppingCart');
-});
 
 //Hacer un nuevo archivo para meter estas rutas
 Route::get('/productos/categoria/{id}', [ProductController::class, 'showByCategory'])->name('products.byCategory');

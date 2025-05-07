@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trabajo Empresa Frigorífica</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/shoppingCartView.css') }}">
@@ -55,6 +56,12 @@
     <main class="cart-main">
         <h1 class="cart-title">Confirmación del pedido</h1>
 
+        @php
+            $total = session()->has('cart')
+                ? collect(session('cart'))->sum(fn($item) => $item['price'] * $item['quantity'] * 1.21)
+                : 0;
+        @endphp
+
         <div class="cart-table">
             <div class="cart-header">
                 <div>Producto</div>
@@ -65,38 +72,44 @@
                 <div>Subtotal (IVA incl.)</div>
             </div>
 
-            <div class="cart-row">
-                <div class="product-info">
-                    <img src="{{ asset('img/camaronFresco.jpg') }}" alt="Gambardina" />
-                    <span class="product-name">Gambardina</span>
-                </div>
-                <div class="product-format">Kg.</div>
-                    <div class="product-actions">
-                        <div class="quantity-selector">
-                            <input type="number" value="1" min="1">
-                            <button>-</button>
-                            <button>+</button>
+            @if(session()->has('cart') && !empty(session('cart')))
+                @foreach(session('cart') as $productId => $data)
+                    <div class="cart-row" data-id="{{ $productId }}" data-price="{{ $data['price'] }}">
+                        <div class="product-info">
+                            <img src="{{ asset($data['image'] ?? 'img/default.jpg') }}" alt="{{ $data['nombre'] }}" />
+                            <span class="product-name">{{ $data['nombre'] }}</span>
                         </div>
-                        <button class="add-to-cart">
-                            <img src="{{ asset('img/delete.png') }}" alt="Carrito" class="cart-image">
-                        </button>
+                        <div class="product-format">Kg.</div>
+                        <div class="product-actions">
+                            <div class="quantity-selector">
+                                <button class="decrement-btn">-</button>
+                                <input type="number" value="{{ $data['quantity'] }}" min="1" id="quantity-input" readonly>
+                                <button class="increment-btn">+</button>
+                            </div>
+                        </div>
+                        <div class="unit-price">€{{ number_format($data['price'], 2) }}</div>
+                        <div class="price-vat">€{{ number_format($data['price'] * 1.21, 2) }}</div>
+                        <div class="subtotal">€{{ number_format($data['price'] * $data['quantity'] * 1.21, 2) }}</div>
                     </div>
-                <div class="unit-price">10.50</div>
-                <div class="price-vat">10.50</div>
-                <div class="subtotal">10.50</div>
-            </div>
+                @endforeach
+            @else
+                <p>No hay productos en tu carrito.</p>
+            @endif
         </div>
 
         <div class="cart-actions">
             <button class="delete-order">
                 <img src="{{ asset('img/delete.png') }}" alt="Eliminar" class="icon" /> Eliminar pedido
             </button>
-            <button class="card-summary">Total: 10.50</button>
+
+            <button class="card-summary">Total: €<span id="total-price">{{ number_format($total, 2) }}</span></button>
+
             <button class="continue-btn">
                 <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="icon" /> Continuar pedido
             </button>
         </div>
     </main>
+
 
     <footer class="footer">
         <div class="logo">
@@ -142,6 +155,45 @@
             </svg>
         </div>
     </footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cartRows = document.querySelectorAll(".cart-row");
+
+        cartRows.forEach(row => {
+            const incrementBtn = row.querySelector(".increment-btn");
+            const decrementBtn = row.querySelector(".decrement-btn");
+            const quantityInput = row.querySelector("#quantity-input");
+            const subtotal = row.querySelector(".subtotal");
+            const priceVat = row.querySelector(".price-vat");
+            const unitPrice = parseFloat(row.dataset.price);
+            const totalPriceElement = document.getElementById("total-price");
+
+            function updateTotals() {
+                let quantity = parseInt(quantityInput.value);
+                let newSubtotal = (unitPrice * quantity * 1.21).toFixed(2);
+                subtotal.textContent = `€${newSubtotal}`;
+                priceVat.textContent = `€${(unitPrice * 1.21).toFixed(2)}`;
+
+                let total = Array.from(document.querySelectorAll(".subtotal"))
+                    .reduce((sum, el) => sum + parseFloat(el.textContent.replace("€", "")), 0);
+
+                totalPriceElement.textContent = total.toFixed(2);
+            }
+
+            incrementBtn.addEventListener("click", function () {
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+                updateTotals();
+            });
+
+            decrementBtn.addEventListener("click", function () {
+                if (parseInt(quantityInput.value) > 1) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                    updateTotals();
+                }
+            });
+        });
+    });
+</script>
 </body>
 
 </html>

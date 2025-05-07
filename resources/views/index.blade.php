@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trabajo Empresa Frigorífica</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
@@ -69,10 +70,13 @@
             </ul>
         </nav>
         <div class="cart-container-wrapper">
-            <span class="products-counter">Precio: 0</span>
+            <span class="products-counter">Precio: €0.00</span>
             <div class="cart-container">
-                <img src="{{ asset('img/carrito.png') }}" alt="Carrito de compras" class="cart-icon">
+                <a href="{{ route('shopping.cart') }}">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito de compras" class="cart-icon">
+                </a>
             </div>
+
         </div>
     </div>
     @auth
@@ -87,7 +91,7 @@
     <div class="products-section">
         <div class="products-grid">
             @foreach ($productos as $producto)
-                <div class="product-card">
+                <div class="product-card" data-id="{{ $producto->id }}" data-stock="{{ $producto->stock }}">
                     <img src="{{ asset($producto->imagen_url) }}" alt="Imagen de {{ $producto->nombre }}" class="product-image">
 
                     <h3 class="product-title">{{ $producto->nombre }}</h3>
@@ -95,9 +99,8 @@
 
                     <div class="product-actions">
                         <div class="quantity-selector">
-                            <input type="number" value="1" min="1">
-                            <button>-</button>
-                            <button>+</button>
+                            <button class="decrement">–</button>
+                            <button class="increment">+</button>
                         </div>
                         <button class="add-to-cart">
                             <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
@@ -105,7 +108,6 @@
                     </div>
                 </div>
             @endforeach
-
         </div>
     </div>
 </main>
@@ -192,5 +194,74 @@
         </svg>
     </div>
 </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cartTotalDisplay = document.querySelector('.products-counter');
+        let cart = JSON.parse(sessionStorage.getItem('cart')) || {}; // Recuperar carrito de la sesión
+
+        function updateTotalDisplay() {
+            if (Object.keys(cart).length === 0) {
+                cartTotalDisplay.textContent = "Precio: €0.00";
+                return;
+            }
+
+            const totalPrice = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotalDisplay.textContent = `Precio: €${totalPrice.toFixed(2)}`;
+
+            fetch('/update-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify(cart)
+            });
+
+            sessionStorage.setItem('cart', JSON.stringify(cart)); // Guardar temporalmente
+        }
+
+        document.querySelectorAll('.increment').forEach(button => {
+            button.addEventListener('click', () => {
+                const productCard = button.closest('.product-card');
+                const productId = productCard.getAttribute('data-id');
+                const productName = productCard.querySelector('.product-title').textContent;
+                const priceText = productCard.querySelector('.product-price').textContent;
+                const imageUrl = productCard.querySelector('.product-image').getAttribute('src');
+                const pricePerKg = parseFloat(priceText.replace(/[^\d,.-]/g, '').replace(',', '.'));
+                const stock = parseInt(productCard.getAttribute('data-stock'), 10);
+
+                // Verificamos si hay stock disponible antes de sumar
+                if (!cart[productId]) {
+                    cart[productId] = { nombre: productName, price: pricePerKg, quantity: 1, image: imageUrl };
+                } else if (cart[productId].quantity < stock) {
+                    cart[productId].quantity += 1;
+                } else {
+                    alert(`No puedes añadir más unidades de ${productName}. Stock máximo alcanzado.`);
+                    return;
+                }
+
+                updateTotalDisplay();
+            });
+        });
+
+        document.querySelectorAll('.decrement').forEach(button => {
+            button.addEventListener('click', () => {
+                const productCard = button.closest('.product-card');
+                const productId = productCard.getAttribute('data-id');
+
+                if (cart[productId]) {
+                    if (cart[productId].quantity > 1) {
+                        cart[productId].quantity -= 1;
+                    } else {
+                        delete cart[productId]; // Solo eliminar si la cantidad llegó a 0
+                    }
+                    updateTotalDisplay();
+                }
+            });
+        });
+
+        updateTotalDisplay(); // Mostrar precio total al cargar la página
+    });
+</script>
 </body>
 </html>
