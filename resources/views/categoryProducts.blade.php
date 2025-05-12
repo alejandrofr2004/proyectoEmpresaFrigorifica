@@ -69,26 +69,27 @@
             </ul>
         </nav>
         <div class="cart-container-wrapper">
-            <span class="products-counter">Precio: 0</span>
+            <span class="products-counter">Precio: €{{ number_format(Auth::user()->total_cart ?? 0, 2) }}</span>
             <div class="cart-container">
-                <img src="{{ asset('img/carrito.png') }}" alt="Carrito de compras" class="cart-icon">
+                <a href="{{ route('shopping.cart') }}">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito de compras" class="cart-icon">
+                </a>
             </div>
         </div>
     </div>
     <div class="products-section">
         <div class="products-grid">
             @foreach ($productos as $producto)
-                <div class="product-card">
-                    <img src="{{ asset($producto->imagen_url) }}" alt="Imagen de {{ $producto->nombre }}" class="product-image">
+                <div class="product-card" data-id="{{ $producto->id }}" data-stock="{{ $producto->stock }}">
+                <img src="{{ asset($producto->imagen_url) }}" alt="Imagen de {{ $producto->nombre }}" class="product-image">
 
                     <h3 class="product-title">{{ $producto->nombre }}</h3>
                     <p class="product-price">€{{ number_format($producto->precio, 2) }}/kg</p>
 
                     <div class="product-actions">
                         <div class="quantity-selector">
-                            <input type="number" value="1" min="1">
-                            <button>-</button>
-                            <button>+</button>
+                            <button class="decrement">–</button>
+                            <button class="increment">+</button>
                         </div>
                         <button class="add-to-cart">
                             <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
@@ -183,5 +184,83 @@
         </svg>
     </div>
 </footer>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const cartTotalDisplay = document.querySelector(".products-counter");
+        let cart = await loadCart(); // Cargar carrito del usuario desde la BD
+
+        async function loadCart() {
+            const response = await fetch("/cart");
+            return response.ok ? await response.json() : {};
+        }
+
+        async function updateCart(productId, quantity, productName = "", price = 0, imageUrl = "", stock) {
+            if (quantity > stock) {
+                alert(`No puedes añadir más unidades de ${productName}. Stock máximo alcanzado.`);
+                return;
+            }
+
+            const response = await fetch("/cart/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                },
+                body: JSON.stringify({ [productId]: { quantity, nombre: productName, price, image: imageUrl } }),
+            });
+
+            if (response.ok) {
+                cart = await response.json();
+                updateTotalDisplay();
+            }
+        }
+
+        function updateTotalDisplay() {
+            if (Object.keys(cart).length === 0) {
+                cartTotalDisplay.textContent = "Precio: €0.00";
+                return;
+            }
+
+            const totalPrice = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotalDisplay.textContent = `Precio: €${totalPrice.toFixed(2)}`;
+        }
+
+        document.querySelectorAll(".product-card").forEach(productCard => {
+            const productId = productCard.getAttribute("data-id");
+            const stock = parseInt(productCard.getAttribute("data-stock") || "0", 10);
+            const productName = productCard.querySelector(".product-title").textContent;
+            const priceText = productCard.querySelector(".product-price").textContent;
+            const imageUrl = productCard.querySelector(".product-image").getAttribute("src");
+            const pricePerKg = parseFloat(priceText.replace(/[^\d,.-]/g, "").replace(",", "."));
+            const quantityInput = productCard.querySelector(".quantity-selector input");
+            const incrementBtn = productCard.querySelector(".increment");
+            const decrementBtn = productCard.querySelector(".decrement");
+
+            incrementBtn.addEventListener("click", async () => {
+                let currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity < stock) {
+                    quantityInput.value = currentQuantity + 1;
+                    await updateCart(productId, currentQuantity + 1, productName, pricePerKg, imageUrl, stock);
+                } else {
+                    alert(`No puedes añadir más unidades de ${productName}. Stock máximo alcanzado.`);
+                }
+            });
+
+            decrementBtn.addEventListener("click", async () => {
+                let currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity > 1) {
+                    quantityInput.value = currentQuantity - 1;
+                    await updateCart(productId, currentQuantity - 1, productName, pricePerKg, imageUrl, stock);
+                } else {
+                    delete cart[productId];
+                    await updateCart(productId, 0, productName, pricePerKg, imageUrl, stock);
+                    productCard.remove(); // 🔥 Borra la tarjeta de producto si llega a 0
+                }
+            });
+        });
+
+        updateTotalDisplay();
+    });
+</script>
 </body>
 </html>

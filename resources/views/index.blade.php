@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trabajo Empresa Frigorífica</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <header class="header">
@@ -70,7 +71,10 @@
             </ul>
         </nav>
         <div class="cart-container-wrapper">
-            <span class="products-counter">Precio: €0.00</span>
+        <span class="products-counter">
+             Precio: €<span id="total-price">0.00</span>
+        </span>
+
             <div class="cart-container">
                 <a href="{{ route('shopping.cart') }}">
                     <img src="{{ asset('img/carrito.png') }}" alt="Carrito de compras" class="cart-icon">
@@ -79,15 +83,36 @@
 
         </div>
     </div>
-    @auth
-        <h1 class="section-title">Bienvenido, {{ auth()->user()->first_name }}</h1>
+    @if(session('pedido_completado'))
+        <div class="alert alert-success text-center">
+            Pedido completado. Puedes recogerlo en nuestra tienda el {{ session('fecha_recogida') }}.
+        </div>
+        <a href="{{ route('pedido.factura', ['pedido' => session('pedido_id')]) }}" class="btn btn-primary mt-3 text-center">
+            Descargar Factura
+        </a>
+    @endif
+    @if(session('pedido_borrado'))
+        <div class="alert alert-success text-center">
+            Pedido borrado correctamente.
+        </div>
+        <script>
+            localStorage.removeItem('cart');
+            localStorage.removeItem('cartTotal');
+        </script>
+    @endif
+
+    @if(!isset($nombreCategoria))
+        @auth
+            <h1 class="section-title">Bienvenido, {{ auth()->user()->first_name }}</h1>
+        @else
+            <h1 class="section-title">Bienvenido a la web de Frío Market</h1>
+        @endauth
+        <div class="image-block">
+            <img src="{{ asset('img/tienda.jpg') }}" alt="Imagen destacada de FríoMarket" class="featured-image">
+        </div>
     @else
-        <h1 class="section-title">Bienvenido a la web de Frío Market</h1>
-    @endauth
-    <div class="image-block">
-        <img src="{{ asset('img/tienda.jpg') }}" alt="Imagen destacada de FríoMarket" class="featured-image">
-    </div>
-    <h1 class="section-title">Productos que podrían interesarte</h1>
+        <h1 class="section-title">{{ $nombreCategoria }}</h1>
+    @endif
     <div class="products-section">
         <div class="products-grid">
             @foreach ($productos as $producto)
@@ -102,9 +127,9 @@
                             <button class="decrement">–</button>
                             <button class="increment">+</button>
                         </div>
-                        <button class="add-to-cart">
+                        <a href="{{ route('shopping.cart') }}" class="add-to-cart">
                             <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="cart-image">
-                        </button>
+                        </a>
                     </div>
                 </div>
             @endforeach
@@ -195,72 +220,141 @@
     </div>
 </footer>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const cartTotalDisplay = document.querySelector('.products-counter');
-        let cart = JSON.parse(sessionStorage.getItem('cart')) || {}; // Recuperar carrito de la sesión
+    document.addEventListener("DOMContentLoaded", async () => {
+        const cartTotalDisplay = document.querySelector(".products-counter");
+        let cart = JSON.parse(localStorage.getItem("cart")) || {};
 
-        function updateTotalDisplay() {
-            if (Object.keys(cart).length === 0) {
+        updateTotalDisplayInstant();
+
+        async function loadCart() {
+            try {
+                const response = await fetch("/cart");
+                if (response.ok) {
+                    const serverCart = await response.json();
+                    if (serverCart && Object.keys(serverCart).length > 0) {
+                        cart = serverCart;
+                        localStorage.setItem("cart", JSON.stringify(cart));
+                    }
+                    updateTotalDisplayInstant();
+                }
+            } catch (error) {
+                console.error("Error al cargar el carrito:", error);
+            }
+        }
+
+        async function updateCart(productId, quantity, productName = null, price = null, imageUrl = null) {
+            if (!cart[productId] && quantity <= 0) return;
+
+            const existing = cart[productId] || {};
+            const nombre = productName ?? existing.nombre ?? "";
+            const precio = price ?? existing.price ?? 0;
+            const imagen = imageUrl ?? existing.image ?? "";
+
+            if (quantity > 0) {
+                cart[productId] = {
+                    quantity,
+                    nombre,
+                    price: precio,
+                    image: imagen
+                };
+            } else {
+                delete cart[productId];
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateTotalDisplayInstant();
+
+            try {
+                const response = await fetch("/cart/update", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    },
+                    body: JSON.stringify({ [productId]: cart[productId] || null }),
+                });
+
+                if (response.ok) {
+                    await response.json();
+                }
+            } catch (error) {
+                console.error("Error al actualizar el carrito:", error);
+            }
+        }
+
+        function updateTotalDisplayInstant() {
+            if (!cart || Object.keys(cart).length === 0) {
                 cartTotalDisplay.textContent = "Precio: €0.00";
+                localStorage.removeItem("cart");
+                localStorage.removeItem("cartTotal");
                 return;
             }
 
-            const totalPrice = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartTotalDisplay.textContent = `Precio: €${totalPrice.toFixed(2)}`;
-
-            fetch('/update-cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify(cart)
+            let totalPrice = 0;
+            Object.values(cart).forEach(item => {
+                if (item.price && item.quantity > 0) {
+                    totalPrice += parseFloat(item.price) * parseInt(item.quantity);
+                }
             });
 
-            sessionStorage.setItem('cart', JSON.stringify(cart)); // Guardar temporalmente
+            cartTotalDisplay.textContent = `Precio: €${isNaN(totalPrice) ? "0.00" : totalPrice.toFixed(2)}`;
+            localStorage.setItem("cartTotal", totalPrice.toFixed(2));
         }
 
-        document.querySelectorAll('.increment').forEach(button => {
-            button.addEventListener('click', () => {
-                const productCard = button.closest('.product-card');
-                const productId = productCard.getAttribute('data-id');
-                const productName = productCard.querySelector('.product-title').textContent;
-                const priceText = productCard.querySelector('.product-price').textContent;
-                const imageUrl = productCard.querySelector('.product-image').getAttribute('src');
-                const pricePerKg = parseFloat(priceText.replace(/[^\d,.-]/g, '').replace(',', '.'));
-                const stock = parseInt(productCard.getAttribute('data-stock'), 10);
+        // Incrementar cantidad
+        document.querySelectorAll(".increment").forEach(button => {
+            button.addEventListener("click", async () => {
+                const productCard = button.closest(".product-card");
+                const productId = productCard.getAttribute("data-id");
+                const productName = productCard.querySelector(".product-title").textContent;
+                const priceText = productCard.querySelector(".product-price").textContent;
+                const imageUrl = productCard.querySelector(".product-image").getAttribute("src");
+                const pricePerKg = parseFloat(priceText.replace(/[^\d,.-]/g, "").replace(",", "."));
+                const stock = parseInt(productCard.getAttribute("data-stock") || "0", 10);
 
-                // Verificamos si hay stock disponible antes de sumar
                 if (!cart[productId]) {
-                    cart[productId] = { nombre: productName, price: pricePerKg, quantity: 1, image: imageUrl };
-                } else if (cart[productId].quantity < stock) {
-                    cart[productId].quantity += 1;
+                    if (stock > 0) {
+                        cart[productId] = { nombre: productName, price: pricePerKg, quantity: 1, image: imageUrl };
+                    } else {
+                        alert(`No hay stock disponible para ${productName}.`);
+                        return;
+                    }
                 } else {
-                    alert(`No puedes añadir más unidades de ${productName}. Stock máximo alcanzado.`);
-                    return;
+                    if (cart[productId].quantity < stock) {
+                        cart[productId].quantity += 1;
+                    } else {
+                        alert(`No puedes añadir más unidades de ${productName}. Stock máximo alcanzado.`);
+                        return;
+                    }
                 }
 
-                updateTotalDisplay();
+                updateTotalDisplayInstant();
+                await updateCart(productId, cart[productId].quantity, productName, pricePerKg, imageUrl);
             });
         });
 
-        document.querySelectorAll('.decrement').forEach(button => {
-            button.addEventListener('click', () => {
-                const productCard = button.closest('.product-card');
-                const productId = productCard.getAttribute('data-id');
+        // Decrementar cantidad
+        document.querySelectorAll(".decrement").forEach(button => {
+            button.addEventListener("click", async () => {
+                const productCard = button.closest(".product-card");
+                const productId = productCard.getAttribute("data-id");
 
                 if (cart[productId]) {
                     if (cart[productId].quantity > 1) {
                         cart[productId].quantity -= 1;
+                        const { nombre, price, image } = cart[productId];
+                        await updateCart(productId, cart[productId].quantity, nombre, price, image);
                     } else {
-                        delete cart[productId]; // Solo eliminar si la cantidad llegó a 0
+                        const { nombre, price, image } = cart[productId];
+                        cart[productId].quantity = 1;
+                        await updateCart(productId, 1, nombre, price, image);
                     }
-                    updateTotalDisplay();
+                    updateTotalDisplayInstant();
                 }
             });
         });
 
-        updateTotalDisplay(); // Mostrar precio total al cargar la página
+        loadCart();
     });
 </script>
 </body>

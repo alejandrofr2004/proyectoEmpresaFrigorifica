@@ -2,15 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\User;
 
 class CartController extends Controller
 {
-    // Metodo para actualizar el carrito en la sesión
+    // Obtener el carrito del usuario desde la BD
+    public function getCart()
+    {
+        $user = Auth::user();
+        $cart = json_decode($user->cart, true) ?? [];
+        return response()->json($cart);
+    }
+
+    // Actualizar el carrito del usuario en la BD
     public function updateCart(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $user = Auth::user();
+        $cart = json_decode($user->cart, true) ?? [];
 
         foreach ($request->all() as $productId => $data) {
             $producto = Product::find($productId);
@@ -24,19 +36,66 @@ class CartController extends Controller
                         'image' => $producto->imagen_url
                     ];
                 } else {
-                    unset($cart[$productId]); // Eliminar si la cantidad es 0
+                    unset($cart[$productId]);
                 }
             }
         }
 
-        session()->put('cart', $cart);
+        // Guardar el carrito en la BD del usuario
+        $user->cart = json_encode($cart);
+        $user->save();
+
         return response()->json(['message' => 'Carrito actualizado correctamente']);
     }
 
-    // Metodo para mostrar el carrito en la vista shoppingCart
+    // Mostrar el carrito en la vista
     public function showCart()
     {
-        $cart = session()->get('cart', []);
-        return view('shoppingCart', compact('cart'));
+        $user = Auth::user();
+        $cart = json_decode($user->cart, true) ?? [];
+        $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity'] * 1.21);
+
+        // Traer las categorías padre con sus subcategorías
+        $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
+
+        // Traer las subcategorías sin padre (Carnes, Verduras, etc.)
+        $categoriasSinPadre = Category::whereNull('padre_id')->whereIn('nombre', ['Carnes', 'Verduras', 'Precocinados', 'Conservas'])->get();
+
+        return view('shoppingCart', [
+            'cart' => $cart,
+            'categoriasPadre' => $categoriasPadre,
+            'categoriasSinPadre' => $categoriasSinPadre,
+            'total' => $total
+        ]);
     }
+
+
+    // Vaciar el carrito
+    public function clearCart()
+    {
+        $user = Auth::user();
+        $user->cart = json_encode([]);
+        $user->save();
+
+        session()->forget('cart');
+        session()->put('cart', []);
+        session()->put('total', 0);
+        session()->save();
+
+        // Traer las categorías padre con sus subcategorías
+        $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
+
+        // Traer las subcategorías sin padre (Carnes, Verduras, etc.)
+        $categoriasSinPadre = Category::whereNull('padre_id')->whereIn('nombre', ['Carnes', 'Verduras', 'Precocinados', 'Conservas'])->get();
+
+        return redirect()->route('index')->with([
+            'success' => 'Carrito borrado correctamente.',
+            'categoriasPadre' => $categoriasPadre,
+            'categoriasSinPadre' => $categoriasSinPadre,
+            'pedido_borrado' => 'Pedido borrado correctamente.'
+        ]);
+
+
+    }
+
 }

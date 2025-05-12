@@ -7,8 +7,9 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\OrderController;
 
+Route::middleware(['auth'])->group(function () {
 Route::get('/', [ProductController::class, 'showProduct'])->name('index');
 
 Route::middleware(['role:admin|empleado'])->group(function () {
@@ -42,14 +43,22 @@ Route::middleware(['role:admin|empleado'])->group(function () {
     Route::delete('/admin/categorias/{id}', [CategoryController::class, 'destroy'])->name('deleteCategory');
 });
 
-//Carrito
-Route::post('/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
-Route::get('/shopping-cart', [CartController::class, 'showCart'])->name('shopping.cart');
+    //Carrito
+    Route::get('/cart', [CartController::class, 'getCart'])->name('cart.get');
+    Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::get('/shopping-cart', [CartController::class, 'showCart'])->name('shopping.cart');
+    Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 
+    //Confirmar el pedido
+    Route::post('/order/confirm', [OrderController::class, 'store'])->name('order.confirm');
 
-//Hacer un nuevo archivo para meter estas rutas
-Route::get('/productos/categoria/{id}', [ProductController::class, 'showByCategory'])->name('products.byCategory');
+    //Factura
+    Route::get('/pedido/{pedido}/factura', [OrderController::class, 'factura'])->name('pedido.factura');
 
+    //Hacer un nuevo archivo para meter estas rutas
+    Route::get('/productos/categoria/{id}', [ProductController::class, 'showByCategory'])->name('products.byCategory');
+
+});
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // Ruta para procesar el formulario de login

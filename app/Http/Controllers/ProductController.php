@@ -35,6 +35,7 @@ class ProductController extends Controller
     {
         // Buscar la categoría
         $categoria = Category::findOrFail($id);
+        $nombreCategoria = $categoria->nombre;
         // Traer las categorías padre con sus subcategorías
         $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
 
@@ -53,9 +54,10 @@ class ProductController extends Controller
             $productos = Product::where('categoria_id', $categoria->id)->get();
         }
 
-        return view('categoryProducts', [
+        return view('index', [
             'productos' => $productos,
             'categoria' => $categoria,
+            'nombreCategoria' => $nombreCategoria,
             'categoriasPadre' => $categoriasPadre,
             'categoriasSinPadre' => $categoriasSinPadre
         ]);

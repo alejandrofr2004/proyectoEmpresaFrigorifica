@@ -11,48 +11,54 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="logo">
-            <a href="{{ route('index') }}">
-                <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
-            </a>
-        </div>
-        <nav class="menu">
-            <ul class="menu-links">
+<header class="header">
+    <div class="logo">
+        <a href="{{ route('index') }}">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo de FríoMarket">
+        </a>
+    </div>
+    <nav class="menu">
+        <ul class="menu-links">
+            @foreach ($categoriasPadre as $categoria)
                 <li class="menu-item">
-                    <a href="#pescados">Pescados</a>
-                    <img src="{{ asset('img/pescado.png') }}" alt="Imagen de Pescados" class="menu-image">
-                    <ul class="submenu">
-                        <li><a href="#atun">Atún</a></li>
-                        <li><a href="#merluza">Merluza</a></li>
-                        <li><a href="#sardinas">Sardinas</a></li>
-                    </ul>
+                    <a href="{{ route('products.byCategory', $categoria->id) }}">
+                        {{ $categoria->nombre }}
+                    </a>
+
+                    @if ($categoria->imagen)
+                        <a href="{{ route('products.byCategory', $categoria->id) }}">
+                            <img src="{{ asset($categoria->imagen) }}" alt="Imagen de {{ $categoria->nombre }}" class="menu-image">
+                        </a>
+                    @endif
+
+                    @if ($categoria->children->isNotEmpty())
+                        <ul class="submenu">
+                            @foreach ($categoria->children as $subcategoria)
+                                <li>
+                                    <a href="{{ route('products.byCategory', $subcategoria->id) }}">
+                                        {{ $subcategoria->nombre }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </li>
-                <li class="menu-item">
-                    <a href="#cefalopodos">Cefalópodos</a>
-                    <img src="{{ asset('img/calamar.png') }}" alt="Imagen de Cefalópodos" class="menu-image">
-                    <ul class="submenu">
-                        <li><a href="#pulpo">Pulpo</a></li>
-                        <li><a href="#calamar">Calamar</a></li>
-                        <li><a href="#sepia">Sepia</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a href="#mariscos">Mariscos</a>
-                    <img src="{{ asset('img/camaron.png') }}" alt="Imagen de Mariscos" class="menu-image">
-                    <ul class="submenu">
-                        <li><a href="#camaron">Camarón</a></li>
-                        <li><a href="#ostras">Ostras</a></li>
-                        <li><a href="#mejillones">Mejillones</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="auth-buttons">
+            @endforeach
+        </ul>
+
+        <div class="auth-buttons">
+            @auth
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="logout">Cerrar sesión</button>
+                </form>
+            @else
                 <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
                 <a href="{{ route('register') }}" class="register">Registrarse</a>
-            </div>
-        </nav>
-    </header>
+            @endauth
+        </div>
+    </nav>
+</header>
     <main class="cart-main">
         <h1 class="cart-title">Confirmación del pedido</h1>
 
@@ -72,8 +78,8 @@
                 <div>Subtotal (IVA incl.)</div>
             </div>
 
-            @if(session()->has('cart') && !empty(session('cart')))
-                @foreach(session('cart') as $productId => $data)
+            @if(!empty($cart))
+                @foreach($cart as $productId => $data)
                     <div class="cart-row" data-id="{{ $productId }}" data-price="{{ $data['price'] }}">
                         <div class="product-info">
                             <img src="{{ asset($data['image'] ?? 'img/default.jpg') }}" alt="{{ $data['nombre'] }}" />
@@ -82,9 +88,7 @@
                         <div class="product-format">Kg.</div>
                         <div class="product-actions">
                             <div class="quantity-selector">
-                                <button class="decrement-btn">-</button>
                                 <input type="number" value="{{ $data['quantity'] }}" min="1" id="quantity-input" readonly>
-                                <button class="increment-btn">+</button>
                             </div>
                         </div>
                         <div class="unit-price">€{{ number_format($data['price'], 2) }}</div>
@@ -95,18 +99,26 @@
             @else
                 <p>No hay productos en tu carrito.</p>
             @endif
+
         </div>
 
         <div class="cart-actions">
-            <button class="delete-order">
-                <img src="{{ asset('img/delete.png') }}" alt="Eliminar" class="icon" /> Eliminar pedido
-            </button>
+            <form action="{{ route('cart.clear') }}" method="POST">
+                @csrf
+                <button type="submit" class="delete-order">
+                    <img src="{{ asset('img/delete.png') }}" alt="Eliminar" class="icon" /> Eliminar pedido
+                </button>
+            </form>
 
             <button class="card-summary">Total: €<span id="total-price">{{ number_format($total, 2) }}</span></button>
 
-            <button class="continue-btn">
-                <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="icon" /> Continuar pedido
-            </button>
+            <form action="{{ route('order.confirm') }}" method="POST">
+                @csrf
+                <button type="submit" class="continue-btn">
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="icon" /> Continuar pedido
+                </button>
+            </form>
+
         </div>
     </main>
 
@@ -157,11 +169,10 @@
     </footer>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
         const cartRows = document.querySelectorAll(".cart-row");
 
         cartRows.forEach(row => {
-            const incrementBtn = row.querySelector(".increment-btn");
-            const decrementBtn = row.querySelector(".decrement-btn");
             const quantityInput = row.querySelector("#quantity-input");
             const subtotal = row.querySelector(".subtotal");
             const priceVat = row.querySelector(".price-vat");
@@ -180,17 +191,7 @@
                 totalPriceElement.textContent = total.toFixed(2);
             }
 
-            incrementBtn.addEventListener("click", function () {
-                quantityInput.value = parseInt(quantityInput.value) + 1;
-                updateTotals();
-            });
-
-            decrementBtn.addEventListener("click", function () {
-                if (parseInt(quantityInput.value) > 1) {
-                    quantityInput.value = parseInt(quantityInput.value) - 1;
-                    updateTotals();
-                }
-            });
+            updateTotals();
         });
     });
 </script>

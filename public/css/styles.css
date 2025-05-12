@@ -2,25 +2,27 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #ffffff;
+    font-size: 18px;
+    line-height: 1.6;
 }
 
 .header {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 10px 20px;
+    padding: 20px 30px;
     background-color: #1e81b0;
     color: #ffffff;
 }
 
 .logo img {
-    width: 150px;
+    width: 220px;
 }
 
 .menu {
     display: flex;
     align-items: flex-start;
-    gap: 30px;
+    gap: 40px;
 }
 
 .menu-links {
@@ -30,7 +32,7 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    gap: 30px;
+    gap: 50px;
     padding: 0;
     margin: 0;
 }
@@ -40,8 +42,8 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    position: relative;
 }
-
 
 .menu-links li {
     text-align: center;
@@ -51,12 +53,13 @@ body {
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
+    font-size: 22px;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .menu-image {
-    width: 40px;
+    width: 55px;
     height: auto;
     border-radius: 5px;
 }
@@ -65,23 +68,26 @@ body {
     display: flex;
     align-content: center;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
+
 .auth-buttons .logout {
     appearance: none;
     font-family: inherit;
-    font-size: inherit;
+    font-size: 20px;
     padding: inherit;
     height: auto;
 }
+
 .auth-buttons a,
 .auth-buttons .logout {
     display: inline-block;
     background-color: #ffffff;
     color: #1e81b0;
     border: 2px solid #ffffff;
-    border-radius: 5px;
-    padding: 5px 15px;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 20px;
     font-weight: bold;
     text-align: center;
     text-decoration: none;
@@ -95,43 +101,40 @@ body {
     color: #ffffff;
 }
 
-
-
 .extra-sections {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 10px;
+    padding: 20px;
     background-color: #ffffff;
-    margin-top: 10px;
-    border-bottom: 1px solid #1e81b0;
+    margin-top: 15px;
+    border-bottom: 2px solid #1e81b0;
 }
 
 .cart-container {
-    width: 40px;
-    height: 40px;
+    width: 55px;
+    height: 55px;
     background-color: #1e81b0;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .cart-container-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 }
 
-
 .cart-icon {
-    width: 30px;
+    width: 35px;
     height: auto;
 }
 
 .extra-sections .menu-links {
     display: flex;
-    gap: 20px;
+    gap: 30px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -141,29 +144,26 @@ body {
     text-decoration: none;
     color: #1e81b0;
     font-weight: bold;
+    font-size: 22px;
 }
 
 .products-counter {
-    font-size: 16px;
+    font-size: 20px;
     color: #1e81b0;
     font-weight: bold;
 }
 
 .image-block {
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: center;
-    padding: 20px;
-    border: 1px solid #1e81b0;
+    padding: 30px;
+    border: 2px solid #1e81b0;
 }
 
 .featured-image {
-    max-width: 60%;
+    max-width: 70%;
     height: auto;
-    border-radius: 10px;
-}
-
-.menu-item {
-    position: relative;
+    border-radius: 12px;
 }
 
 .submenu {
@@ -174,9 +174,10 @@ body {
     background-color: #76c7c0;
     padding: 20px;
     border: 1px solid #FFFFFF;
-    border-radius: 5px;
+    border-radius: 6px;
     list-style: none;
     text-align: left;
+    z-index: 1000;
 }
 
 .submenu li {
@@ -190,10 +191,9 @@ body {
     text-decoration: none;
     color: #FFFFFF;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 16px;
     display: inline-block;
     margin-right: 10px;
-    text-align: left;
 }
 
 .menu-item:hover .submenu {
@@ -201,34 +201,34 @@ body {
 }
 
 .section-title {
-    font-size: 24px;
+    font-size: 30px;
     color: #1e81b0;
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
     font-weight: bold;
 }
 
 .products-section {
-    padding: 20px;
+    padding: 30px;
 }
 
 .products-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
-    gap: 40px;
+    padding: 0 30px;
+    gap: 50px;
 }
 
 .product-card {
-    border: 1px solid #1e81b0;
-    border-radius: 10px;
+    border: 2px solid #1e81b0;
+    border-radius: 12px;
     text-align: center;
-    padding: 10px;
+    padding: 20px;
     background-color: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -239,55 +239,75 @@ body {
     width: 100%;
     height: auto;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
 .product-image {
     width: 100%;
-    height: 200px;
+    height: 280px;
 }
 
 .product-title {
-    font-size: 16px;
+    font-size: 22px;
     color: #1e81b0;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 15px 0 10px;
 }
 
 .product-price {
-    font-size: 14px;
+    font-size: 20px;
     color: #555;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .product-actions {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .quantity-selector {
     display: flex;
     align-items: center;
-    height: 35px;
+    height: 45px;
 }
 
 .quantity-selector input {
-    width: 50px;
-    height: 32px;
+    width: 60px;
+    height: 42px;
     text-align: center;
     border: 1px solid #ccc;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .quantity-selector button {
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
     background-color: #ccc;
     border: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 22px;
+}
+
+.remove-item {
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.remove-item:hover {
+    background-color: #d62828;
+}
+
+.remove-item:active {
+    background-color: #c1121f;
 }
 
 .add-to-cart {
@@ -295,32 +315,32 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
-    height: 35px;
+    width: 60px;
+    height: 45px;
     border: none;
     cursor: pointer;
 }
 
 .cart-image {
-    width: 25px;
+    width: 30px;
     height: auto;
 }
 
 .footer {
     width: 100%;
     background-color: #1e81b0;
-    padding: 40px 0;
+    padding: 60px 0;
     display: flex;
-    gap: 20px;
+    gap: 30px;
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
     color: white;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .footer .logo {
-    max-width: 170px;
+    max-width: 220px;
 }
 
 .footer img {
@@ -329,6 +349,7 @@ body {
 
 .footer a {
     text-decoration: none;
+    font-size: 18px;
 }
 
 .footer svg {
@@ -337,6 +358,20 @@ body {
 
 .footer svg:hover {
     transform: scale(1.1);
+}
+
+.hidden {
+    display: none;
+}
+
+.success-message {
+    color: white;
+    background-color: green;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 6px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 @media screen and (max-width: 768px) {
@@ -350,14 +385,14 @@ body {
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .auth-buttons {
         flex-direction: row;
         justify-content: center;
         width: 100%;
-        gap: 15px;
+        gap: 20px;
     }
 
     .extra-sections {
@@ -367,7 +402,7 @@ body {
 
     .cart-container-wrapper {
         justify-content: center;
-        margin-top: 10px;
+        margin-top: 15px;
     }
 
     .menu {
@@ -376,9 +411,10 @@ body {
         align-items: center;
     }
 
-    .menu-links{
+    .menu-links {
         align-items: center;
         justify-content: center;
+        gap: 20px;
     }
 
     .products-grid {
@@ -389,17 +425,13 @@ body {
 
 @media screen and (max-width: 480px) {
     .logo img {
-        width: 100px;
+        width: 140px;
         text-align: center;
     }
 
-    .menu{
-        align-items: center;
-    }
-
     .auth-buttons a {
-        padding: 5px 10px;
-        font-size: 14px;
+        padding: 10px 15px;
+        font-size: 16px;
     }
 
     .menu-links {
@@ -415,19 +447,19 @@ body {
     }
 
     .product-image {
-        height: 150px;
+        height: 200px;
     }
 
     .section-title {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     .cart-container {
-        width: 35px;
-        height: 35px;
+        width: 45px;
+        height: 45px;
     }
 
     .cart-icon {
-        width: 25px;
+        width: 30px;
     }
 }
