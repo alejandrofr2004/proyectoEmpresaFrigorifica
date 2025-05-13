@@ -58,6 +58,9 @@ Route::middleware(['role:admin|empleado'])->group(function () {
     //Hacer un nuevo archivo para meter estas rutas
     Route::get('/productos/categoria/{id}', [ProductController::class, 'showByCategory'])->name('products.byCategory');
 
+    //Gestión pedidos
+    Route::get('/admin/pedidos', [OrderController::class, 'index'])->name('showOrders');
+    Route::delete('/admin/pedidos/{id}', [OrderController::class, 'destroy'])->name('deleteOrder');
 });
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

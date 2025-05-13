@@ -87,6 +87,11 @@
         <div class="alert alert-success text-center">
             Pedido completado. Puedes recogerlo en nuestra tienda el {{ session('fecha_recogida') }}.
         </div>
+        <div class="text-center mt-3">
+            <a href="{{ route('pedido.factura', session('pedido_id')) }}" class="btn btn-primary">
+                <i class="fas fa-file-pdf"></i> Descargar Factura
+            </a>
+        </div>
         <script>
             localStorage.removeItem('cart');
             localStorage.removeItem('cartTotal');

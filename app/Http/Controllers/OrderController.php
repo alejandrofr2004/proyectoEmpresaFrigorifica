@@ -6,6 +6,7 @@ use App\Models\OrderDetails;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Client;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,4 +67,27 @@ class OrderController extends Controller
         'fecha_recogida' => now()->addDays(2)->format('d/m/Y')
     ]);
 }
+    // Mostrar lista de pedidos
+    public function index()
+    {
+        $pedidos = Order::with('client')->get();
+        return view('showOrders', compact('pedidos'));
+    }
+
+    // Eliminar pedido
+    public function destroy($id)
+    {
+        $pedido = Order::findOrFail($id);
+        $pedido->delete();
+
+        return redirect()->route('showOrders')->with('success', 'Pedido eliminado correctamente.');
+    }
+
+    public function factura($id)
+    {
+        $pedido = Order::with('orderDetails.product')->findOrFail($id);
+
+        $pdf = PDF\Pdf::loadView('invoices.pdf', ['pedido' => $pedido]);
+        return $pdf->download('Factura_'.$pedido->id.'.pdf');
+    }
 }

@@ -27,7 +27,14 @@ class OrderDetails extends Model
     // Relationship: An order detail belongs to a product (N:1)
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'producto_id');
     }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Client::class, 'cliente_id');
+    }
+
+
 }
 

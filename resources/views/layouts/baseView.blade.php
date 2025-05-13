@@ -77,6 +77,9 @@
                             <a class="nav-link" href="{{ route('showCategories') }}">
                                 Categorías
                             </a>
+                            <a class="nav-link" href="{{ route('showOrders') }}">
+                                Pedidos
+                            </a>
                         </nav>
                     </div>
 

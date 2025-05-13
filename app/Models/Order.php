@@ -14,18 +14,21 @@ class Order extends Model
     protected $fillable = [
         'cliente_id',
         'total',
-        'estado',
     ];
 
-    // Relationship: A pedido belongs to a customer (1:N)
-    public function customer()
+    public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class, 'cliente_id');
     }
 
-    // Relationship: A pedido has many order details (1:N)
     public function orderDetails()
     {
-        return $this->hasMany(OrderDetails::class);
+        return $this->hasMany(OrderDetails::class, 'pedido_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
 }
