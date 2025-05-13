@@ -87,9 +87,10 @@
         <div class="alert alert-success text-center">
             Pedido completado. Puedes recogerlo en nuestra tienda el {{ session('fecha_recogida') }}.
         </div>
-        <a href="{{ route('pedido.factura', ['pedido' => session('pedido_id')]) }}" class="btn btn-primary mt-3 text-center">
-            Descargar Factura
-        </a>
+        <script>
+            localStorage.removeItem('cart');
+            localStorage.removeItem('cartTotal');
+        </script>
     @endif
     @if(session('pedido_borrado'))
         <div class="alert alert-success text-center">
@@ -243,23 +244,17 @@
         }
 
         async function updateCart(productId, quantity, productName = null, price = null, imageUrl = null) {
-            if (!cart[productId] && quantity <= 0) return;
-
             const existing = cart[productId] || {};
             const nombre = productName ?? existing.nombre ?? "";
             const precio = price ?? existing.price ?? 0;
             const imagen = imageUrl ?? existing.image ?? "";
 
-            if (quantity > 0) {
-                cart[productId] = {
-                    quantity,
-                    nombre,
-                    price: precio,
-                    image: imagen
-                };
-            } else {
-                delete cart[productId];
-            }
+            cart[productId] = {
+                quantity,
+                nombre,
+                price: precio,
+                image: imagen
+            };
 
             localStorage.setItem("cart", JSON.stringify(cart));
             updateTotalDisplayInstant();
@@ -271,7 +266,9 @@
                         "Content-Type": "application/json",
                         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
                     },
-                    body: JSON.stringify({ [productId]: cart[productId] || null }),
+                    body: JSON.stringify({
+                        [productId]: cart[productId]
+                    }),
                 });
 
                 if (response.ok) {
@@ -340,19 +337,24 @@
                 const productId = productCard.getAttribute("data-id");
 
                 if (cart[productId]) {
+                    const { nombre, price, image } = cart[productId];
+
                     if (cart[productId].quantity > 1) {
                         cart[productId].quantity -= 1;
-                        const { nombre, price, image } = cart[productId];
                         await updateCart(productId, cart[productId].quantity, nombre, price, image);
                     } else {
-                        const { nombre, price, image } = cart[productId];
-                        cart[productId].quantity = 1;
-                        await updateCart(productId, 1, nombre, price, image);
+                        await updateCart(productId, null);
+                        const item = document.querySelector(`.cart-row[data-id='${productId}']`);
+                        if (item) item.remove();
+                        updateTotalDisplayInstant();
                     }
+
+                    // Actualizamos el total siempre después de cualquier cambio
                     updateTotalDisplayInstant();
                 }
             });
         });
+
 
         loadCart();
     });

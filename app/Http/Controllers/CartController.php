@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -23,7 +24,6 @@ class CartController extends Controller
     {
         $user = Auth::user();
         $cart = json_decode($user->cart, true) ?? [];
-
         foreach ($request->all() as $productId => $data) {
             $producto = Product::find($productId);
 
@@ -40,10 +40,11 @@ class CartController extends Controller
                 }
             }
         }
-
         // Guardar el carrito en la BD del usuario
         $user->cart = json_encode($cart);
         $user->save();
+
+        session()->put('cart', $cart);
 
         return response()->json(['message' => 'Carrito actualizado correctamente']);
     }
@@ -78,9 +79,6 @@ class CartController extends Controller
         $user->save();
 
         session()->forget('cart');
-        session()->put('cart', []);
-        session()->put('total', 0);
-        session()->save();
 
         // Traer las categorías padre con sus subcategorías
         $categoriasPadre = Category::with('children')->whereNull('padre_id')->take(3)->get();
