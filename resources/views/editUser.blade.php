@@ -69,9 +69,11 @@
                             <label for="role" class="form-label">Rol</label>
                             <select name="role" id="role" class="form-select" required>
                                 <option value="">Seleccione un rol</option>
-                                <option value="admin" {{ old('role', $usuario->role ?? '') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="cliente" {{ old('role', $usuario->role ?? '') == 'cliente' ? 'selected' : '' }}>Cliente</option>
-                                <option value="empleado" {{ old('role', $usuario->role ?? '') == 'empleado' ? 'selected' : '' }}>Empleado</option>
+                                @foreach($roles as $roleName)
+                                    <option value="{{ $roleName }}" {{ $usuario->roles->pluck('name')->contains($roleName) ? 'selected' : '' }}>
+                                        {{ ucfirst($roleName) }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('role')
                             <span class="text-danger small">{{ $message }}</span>

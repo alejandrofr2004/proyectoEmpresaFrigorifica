@@ -13,7 +13,7 @@ class ProductController extends Controller
         $productos = Product::all();
         return view('showProducts', compact('productos'));
     }
-    public function showProduct(): View
+    public function showProduct()
     {
         // Traer todos los productos
         $productos = Product::inRandomOrder()->take(6)->get();

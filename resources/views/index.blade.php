@@ -247,22 +247,30 @@
                 console.error("Error al cargar el carrito:", error);
             }
         }
-
+        let updatingCart = false;
         async function updateCart(productId, quantity, productName = null, price = null, imageUrl = null) {
-            const existing = cart[productId] || {};
-            const nombre = productName ?? existing.nombre ?? "";
-            const precio = price ?? existing.price ?? 0;
-            const imagen = imageUrl ?? existing.image ?? "";
+            updatingCart = true;
 
-            cart[productId] = {
-                quantity,
-                nombre,
-                price: precio,
-                image: imagen
-            };
+            if (quantity === null) {
+                delete cart[productId];
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateTotalDisplayInstant();
+            } else {
+                const existing = cart[productId] || {};
+                const nombre = productName ?? existing.nombre ?? "";
+                const precio = price ?? existing.price ?? 0;
+                const imagen = imageUrl ?? existing.image ?? "";
 
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateTotalDisplayInstant();
+                cart[productId] = {
+                    quantity,
+                    nombre,
+                    price: precio,
+                    image: imagen
+                };
+
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateTotalDisplayInstant();
+            }
 
             try {
                 const response = await fetch("/cart/update", {
@@ -272,7 +280,7 @@
                         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
                     },
                     body: JSON.stringify({
-                        [productId]: cart[productId]
+                        [productId]: quantity === null ? { quantity: 0 } : cart[productId]
                     }),
                 });
 
@@ -281,8 +289,18 @@
                 }
             } catch (error) {
                 console.error("Error al actualizar el carrito:", error);
+            } finally {
+                updatingCart = false;
             }
         }
+
+        document.querySelector(".cart-container a").addEventListener("click", (e) => {
+            if (updatingCart) {
+                e.preventDefault();
+                alert("Espera un momento mientras se actualiza el carrito...");
+            }
+        });
+
 
         function updateTotalDisplayInstant() {
             if (!cart || Object.keys(cart).length === 0) {

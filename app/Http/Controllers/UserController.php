@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -44,8 +45,7 @@ class UserController extends Controller
             'phone.string'        => 'El teléfono debe ser una cadena de texto.',
             'phone.min'           => 'El teléfono debe tener al menos 9 caracteres.',
             'phone.max'           => 'El teléfono no puede exceder los 20 caracteres.',
-            'role.required'       => 'El rol es obligatorio.',
-            'role.in'             => 'El rol debe ser admin, cliente o empleado.',
+            'role' => 'required|exists:roles,name'
         ]);
 
 
@@ -65,7 +65,8 @@ class UserController extends Controller
     public function edit($id)
     {
         $usuario = User::findOrFail($id);
-        return view('editUser', compact('usuario'));
+        $roles = Role::pluck('name');
+        return view('editUser', compact('usuario', 'roles'));
     }
 
     public function update(Request $request, $id)
@@ -78,7 +79,7 @@ class UserController extends Controller
             'email'      => 'required|email|unique:users,email,' . $usuario->id,  // Validación única excepto para el propio usuario
             'password'   => 'nullable|string|min:6|confirmed', // Contraseña opcional
             'phone'      => 'nullable|string|max:20',
-            'role'       => 'required|in:admin,cliente,empleado'
+            'role' => 'required|exists:roles,name'
         ], [
             'first_name.required' => 'El nombre es obligatorio.',
             'last_name.required'  => 'El apellido es obligatorio.',
