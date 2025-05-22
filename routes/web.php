@@ -66,12 +66,14 @@ Route::middleware(['role:admin|empleado'])->group(function () {
     Route::delete('/admin/pedidos/{id}', [OrderController::class, 'destroy'])->name('deleteOrder');
 });
 
+// Ruta para login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-// Ruta para procesar el formulario de login
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+
 // Ruta para logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Ruta para register
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
 

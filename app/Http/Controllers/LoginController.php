@@ -12,8 +12,6 @@ class LoginController extends Controller
 {
     /**
      * Muestra el formulario de inicio de sesión.
-     *
-     * @return \Illuminate\View\View
      */
     public function showLoginForm()
     {
@@ -21,10 +19,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Procesa el inicio de sesión.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Inicio de sesión.
      */
     public function login(Request $request)
     {
@@ -41,7 +36,7 @@ class LoginController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             // Si la autenticación es exitosa, verificar el rol del usuario
-            $user = Auth::user();  // Obtener el usuario autenticado
+            $user = Auth::user();  // Obtener el usuario autentificado
 
             // Redirigir dependiendo del rol
             if ($user->hasRole('admin')) {
@@ -60,9 +55,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Salir del sistema.
-     *
-     * @return \Illuminate\Http\RedirectResponse
+     * Desloguearte.
      */
     public function logout()
     {

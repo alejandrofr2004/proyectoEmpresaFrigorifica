@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class RegisterController extends Controller
 {
     /**
-     * Show the registration form.
-     *
-     * @return \Illuminate\View\View
+     * Metodo que muestra el register
      */
     public function showRegistrationForm()
     {
@@ -21,10 +19,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Handle a registration request for the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Metodo que valida el register
      */
     public function register(Request $request)
     {
@@ -79,14 +74,14 @@ class RegisterController extends Controller
 
         $user->assignRole('cliente');
 
-        // Crear una entrada en la tabla de clientes
+        // Crear un cliente en la tabla clientes
         Client::create([
             'user_id'   => $user->id,
             'telefono'  => $user->phone,
-            'direccion' => null  // Se completará más adelante al hacer un pedido
+            'direccion' => null
         ]);
 
-        // Redirigir al usuario a la página de inicio de sesión o a donde desees
+        // Redirigir al usuario a la página de inicio de sesión
         return redirect()->route('login')->with('success', 'Te has registrado correctamente. Por favor, inicia sesión.');
     }
 }
