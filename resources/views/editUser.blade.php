@@ -68,12 +68,13 @@
                         <div class="col-md-6 mb-3">
                             <label for="role" class="form-label">Rol</label>
                             <select name="role" id="role" class="form-select" required>
-                                <option value="">Seleccione un rol</option>
-                                @foreach($roles as $roleName)
-                                    <option value="{{ $roleName }}" {{ $usuario->roles->pluck('name')->contains($roleName) ? 'selected' : '' }}>
+                                <option value="">Seleccione un rol</option>@foreach($roles as $roleName)
+                                    <option value="{{ $roleName }}"
+                                        {{ isset($usuario) && $usuario->roles->pluck('name')->contains($roleName) ? 'selected' : '' }}>
                                         {{ ucfirst($roleName) }}
                                     </option>
                                 @endforeach
+
                             </select>
                             @error('role')
                             <span class="text-danger small">{{ $message }}</span>

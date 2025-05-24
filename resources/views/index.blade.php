@@ -72,7 +72,7 @@
         </nav>
         <div class="cart-container-wrapper">
         <span class="products-counter">
-             Precio: €<span id="total-price">0.00</span>
+             Ir al carrito
         </span>
 
             <div class="cart-container">
@@ -227,10 +227,7 @@
 </footer>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        const cartTotalDisplay = document.querySelector(".products-counter");
         let cart = JSON.parse(localStorage.getItem("cart")) || {};
-
-        updateTotalDisplayInstant();
 
         async function loadCart() {
             try {
@@ -241,12 +238,12 @@
                         cart = serverCart;
                         localStorage.setItem("cart", JSON.stringify(cart));
                     }
-                    updateTotalDisplayInstant();
                 }
             } catch (error) {
                 console.error("Error al cargar el carrito:", error);
             }
         }
+
         let updatingCart = false;
         async function updateCart(productId, quantity, productName = null, price = null, imageUrl = null) {
             updatingCart = true;
@@ -254,7 +251,6 @@
             if (quantity === null) {
                 delete cart[productId];
                 localStorage.setItem("cart", JSON.stringify(cart));
-                updateTotalDisplayInstant();
             } else {
                 const existing = cart[productId] || {};
                 const nombre = productName ?? existing.nombre ?? "";
@@ -269,7 +265,6 @@
                 };
 
                 localStorage.setItem("cart", JSON.stringify(cart));
-                updateTotalDisplayInstant();
             }
 
             try {
@@ -301,27 +296,6 @@
             }
         });
 
-
-        function updateTotalDisplayInstant() {
-            if (!cart || Object.keys(cart).length === 0) {
-                cartTotalDisplay.textContent = "Precio: €0.00";
-                localStorage.removeItem("cart");
-                localStorage.removeItem("cartTotal");
-                return;
-            }
-
-            let totalPrice = 0;
-            Object.values(cart).forEach(item => {
-                if (item.price && item.quantity > 0) {
-                    totalPrice += parseFloat(item.price) * parseInt(item.quantity);
-                }
-            });
-
-            cartTotalDisplay.textContent = `Precio: €${isNaN(totalPrice) ? "0.00" : totalPrice.toFixed(2)}`;
-            localStorage.setItem("cartTotal", totalPrice.toFixed(2));
-        }
-
-        // Incrementar cantidad
         document.querySelectorAll(".increment").forEach(button => {
             button.addEventListener("click", async () => {
                 const productCard = button.closest(".product-card");
@@ -348,12 +322,10 @@
                     }
                 }
 
-                updateTotalDisplayInstant();
                 await updateCart(productId, cart[productId].quantity, productName, pricePerKg, imageUrl);
             });
         });
 
-        // Decrementar cantidad
         document.querySelectorAll(".decrement").forEach(button => {
             button.addEventListener("click", async () => {
                 const productCard = button.closest(".product-card");
@@ -369,15 +341,10 @@
                         await updateCart(productId, null);
                         const item = document.querySelector(`.cart-row[data-id='${productId}']`);
                         if (item) item.remove();
-                        updateTotalDisplayInstant();
                     }
-
-                    // Actualizamos el total siempre después de cualquier cambio
-                    updateTotalDisplayInstant();
                 }
             });
         });
-
 
         loadCart();
     });

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,26 +9,21 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Lista de atributos que pueden ser modificados juntos, sólo los editables
      */
     protected $fillable = [
-        'first_name',  // Si tienes un primer nombre
-        'last_name',   // Si tienes un apellido
+        'first_name',
+        'last_name',
         'email',
         'password',
-        'phone',// Si tienes un teléfono
+        'phone',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Atributos ocultos cuando se serialice el modelo (como convertir a JSON), no aparecerán
      */
     protected $hidden = [
         'password',
@@ -37,9 +31,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Atributos que tienen que ser transformados automáticamente
      */
     protected function casts(): array
     {

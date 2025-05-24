@@ -63,10 +63,7 @@
         <h1 class="cart-title">Confirmación del pedido</h1>
 
         @php
-            $cart = session('cart', []);
-            $total = session()->has('cart')
-                ? collect(session('cart'))->sum(fn($item) => $item['price'] * $item['quantity'] * 1.21)
-                : 0;
+            $total = collect($cart??'')->sum(fn($item) => $item['price'] * $item['quantity'] * 1.21);
         @endphp
 
         <div class="cart-table">

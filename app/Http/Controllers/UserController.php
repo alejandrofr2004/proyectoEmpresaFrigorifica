@@ -10,17 +10,27 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    /**
+     * Función para mostrar todos los usuarios.
+     */
     public function index()
     {
         $usuarios = User::all();
         return view('showUsers', compact('usuarios'));
     }
 
+    /**
+     * Devuelve la vista para crear un usuario.
+     */
     public function create()
     {
-        return view('editUser');
+        $roles = Role::pluck('name');
+        return view('editUser', compact('roles'));
     }
 
+    /**
+     * Función que comprueba los datos en la creación de un usuario.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -62,6 +72,9 @@ class UserController extends Controller
         return redirect()->route('showUsers')->with('success', 'Usuario creado exitosamente.');
     }
 
+    /**
+     * Función que devuelve la vista para editar un usuario.
+     */
     public function edit($id)
     {
         $usuario = User::findOrFail($id);
@@ -69,6 +82,9 @@ class UserController extends Controller
         return view('editUser', compact('usuario', 'roles'));
     }
 
+    /**
+     * Función que comprueba la actualización de un usuario.
+     */
     public function update(Request $request, $id)
     {
         $usuario = User::findOrFail($id);
@@ -100,7 +116,7 @@ class UserController extends Controller
         $usuario->assignRole($request->role);
 
         // Verifica si el campo 'password' tiene un valor lleno (no vacío ni nulo).
-        // Si el campo 'password' tiene algún valor, se procederá a actualizar la contraseña
+        // Si el campo 'password' tiene algún valor, se actualiza la contraseña
         // del usuario con el valor ingresado, cifrando la nueva contraseña con Hash::make().
         if ($request->filled('password')) {
             $usuario->password = Hash::make($request->password);
@@ -111,7 +127,9 @@ class UserController extends Controller
         return redirect()->route('showUsers')->with('success', 'Usuario actualizado exitosamente.');
     }
 
-
+    /**
+     * Función que borra un usuario.
+     */
     public function destroy($id)
     {
         $usuario = User::findOrFail($id);
