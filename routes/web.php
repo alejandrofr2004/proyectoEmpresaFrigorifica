@@ -9,11 +9,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 
+//Un usuario tiene que estar logueado para usar la web
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:cliente'])->group(function () {
         Route::get('/', [ProductController::class, 'showProduct'])->name('index');
     });
 
+    //Restrincción para que sólo entren admin y empleados
     Route::middleware(['role:admin|empleado'])->group(function () {
         //Admin
         Route::get('/admin', function () {

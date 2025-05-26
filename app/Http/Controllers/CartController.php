@@ -6,12 +6,12 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
-use App\Models\User;
-use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
-    // Obtener el carrito del usuario desde la BD
+    /**
+     * Obtener el carrito del usuario.
+     */
     public function getCart()
     {
         $user = Auth::user();
@@ -19,7 +19,9 @@ class CartController extends Controller
         return response()->json($cart);
     }
 
-    // Actualizar el carrito del usuario en la BD
+    /**
+     * Actualizar el carrito del usuario.
+     */
     public function updateCart(Request $request)
     {
         $user = Auth::user();
@@ -49,7 +51,9 @@ class CartController extends Controller
         return response()->json(['message' => 'Carrito actualizado correctamente']);
     }
 
-    // Mostrar el carrito en la vista
+    /**
+     * Función para ver los productos del carrito del usuario, para la vista del carrito.
+     */
     public function showCart()
     {
         $user = Auth::user();
@@ -71,7 +75,9 @@ class CartController extends Controller
     }
 
 
-    // Vaciar el carrito
+    /**
+     * Función para vaciar el carrito.
+     */
     public function clearCart()
     {
         $user = Auth::user();
