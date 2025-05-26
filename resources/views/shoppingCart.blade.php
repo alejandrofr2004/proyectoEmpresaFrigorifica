@@ -86,7 +86,9 @@
                         <div class="product-format">Kg.</div>
                         <div class="product-actions">
                             <div class="quantity-selector">
+                                <button class="decrement-cart">−</button>
                                 <input type="number" value="{{ $data['quantity'] }}" min="1" id="quantity-input" readonly>
+                                <button class="increment-cart">+</button>
                             </div>
                         </div>
                         <div class="unit-price">€{{ number_format($data['price'], 2) }}</div>
@@ -113,7 +115,7 @@
             <form action="{{ route('order.confirm') }}" method="POST">
                 @csrf
                 <button type="submit" class="continue-btn">
-                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="icon" /> Continuar pedido
+                    <img src="{{ asset('img/carrito.png') }}" alt="Carrito" class="icon" /> Realizar pedido
                 </button>
             </form>
 
@@ -167,30 +169,86 @@
     </footer>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const totalPriceElement = document.getElementById("total-price");
 
-        const cartRows = document.querySelectorAll(".cart-row");
+        function updateTotals() {
+            let total = 0;
 
-        cartRows.forEach(row => {
-            const quantityInput = row.querySelector("#quantity-input");
-            const subtotal = row.querySelector(".subtotal");
-            const priceVat = row.querySelector(".price-vat");
-            const unitPrice = parseFloat(row.dataset.price);
-            const totalPriceElement = document.getElementById("total-price");
+            document.querySelectorAll(".cart-row").forEach(row => {
+                const unitPrice = parseFloat(row.dataset.price);
+                const quantityInput = row.querySelector("#quantity-input"); // id duplicado
+                const subtotalEl = row.querySelector(".subtotal");
+                const priceVat = row.querySelector(".price-vat");
 
-            function updateTotals() {
-                let quantity = parseInt(quantityInput.value);
-                let newSubtotal = (unitPrice * quantity * 1.21).toFixed(2);
-                subtotal.textContent = `€${newSubtotal}`;
+                const quantity = parseInt(quantityInput.value);
+                const subtotal = (unitPrice * quantity * 1.21).toFixed(2);
+
+                subtotalEl.textContent = `€${subtotal}`;
                 priceVat.textContent = `€${(unitPrice * 1.21).toFixed(2)}`;
+                total += parseFloat(subtotal);
+            });
 
-                let total = Array.from(document.querySelectorAll(".subtotal"))
-                    .reduce((sum, el) => sum + parseFloat(el.textContent.replace("€", "")), 0);
-
+            if (totalPriceElement) {
                 totalPriceElement.textContent = total.toFixed(2);
             }
+        }
 
-            updateTotals();
+        function sendCartUpdate(productId, quantity) {
+            fetch("/cart/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                body: JSON.stringify({
+                    [productId]: { quantity: quantity }
+                })
+            })
+                .then(res => res.json())
+                .then(data => console.log("Carrito actualizado:", data))
+                .catch(err => console.error("Error al actualizar carrito:", err));
+        }
+
+        // Botón de sumar
+        document.querySelectorAll(".increment-cart").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const row = btn.closest(".cart-row");
+                const quantityInput = row.querySelector("#quantity-input");
+                const productId = row.dataset.id;
+
+                let quantity = parseInt(quantityInput.value);
+                quantity += 1;
+                quantityInput.value = quantity;
+
+                sendCartUpdate(productId, quantity);
+                updateTotals();
+            });
         });
+
+        // Botón de restar
+        document.querySelectorAll(".decrement-cart").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const row = btn.closest(".cart-row");
+                const quantityInput = row.querySelector("#quantity-input");
+                const productId = row.dataset.id;
+
+                let quantity = parseInt(quantityInput.value);
+
+                if (quantity > 1) {
+                    quantity -= 1;
+                    quantityInput.value = quantity;
+                    sendCartUpdate(productId, quantity);
+                    updateTotals();
+                } else {
+                    // Eliminar del DOM y del carrito
+                    row.remove();
+                    sendCartUpdate(productId, 0);
+                    updateTotals();
+                }
+            });
+        });
+
+        updateTotals(); // Inicial
     });
 </script>
 </body>
