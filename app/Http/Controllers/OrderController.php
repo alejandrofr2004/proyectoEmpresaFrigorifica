@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    /**
+     * Función para almacenar un nuevo pedido.
+     * Verifica el carrito del usuario, crea el pedido,
+     * guarda los detalles y descuenta stock.
+     */
     public function store(Request $request)
 {
     $user = Auth::user();
@@ -67,14 +72,19 @@ class OrderController extends Controller
         'fecha_recogida' => now()->addDays(2)->format('d/m/Y')
     ]);
 }
-    // Mostrar lista de pedidos
+
+    /**
+     * Función para mostrar la lista de pedidos.
+     */
     public function index()
     {
         $pedidos = Order::with('client')->get();
         return view('showOrders', compact('pedidos'));
     }
 
-    // Eliminar pedido
+    /**
+     * Función para eliminar un pedido por su ID.
+     */
     public function destroy($id)
     {
         $pedido = Order::findOrFail($id);
@@ -83,11 +93,18 @@ class OrderController extends Controller
         return redirect()->route('showOrders')->with('success', 'Pedido eliminado correctamente.');
     }
 
+    /**
+     * Generar y descargar la factura en PDF para un pedido específico.
+     */
     public function factura($id)
     {
+        // Busco el pedido por su ID y cargo sus detalles
         $pedido = Order::with('orderDetails.product')->findOrFail($id);
 
+        // Genero el PDF usando la vista invoices.pdf y le paso el pedido como dato
         $pdf = PDF\Pdf::loadView('invoices.pdf', ['pedido' => $pedido]);
+
+        // Descargo el PDF con el nombre "factura_idpedido.pdf"
         return $pdf->download('Factura_'.$pedido->id.'.pdf');
     }
 }

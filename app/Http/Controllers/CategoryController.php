@@ -7,18 +7,27 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    /**
+     * Función para listar todas las categorías y devolver la vista con ellas
+     */
     public function index()
     {
         $categorias = Category::with('parent')->get();
         return view('showCategories', compact('categorias'));
     }
 
+    /**
+     * Función para mostrar la vista de crear una categoría (pasándole las demás categorías para elegir padre)
+     */
     public function create()
     {
-        $categorias = Category::all(); // Para seleccionar padre si se desea
+        $categorias = Category::all();
         return view('editCategory', compact('categorias'));
     }
 
+    /**
+     * Función para validar y guardar una nueva categoría
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -46,6 +55,9 @@ class CategoryController extends Controller
         return redirect()->route('showCategories')->with('success', 'Categoría creada correctamente.');
     }
 
+    /**
+     * Función para mostrar la vista de editar una categoría (pasándole las demás categorías para elegir padre)
+     */
     public function edit($id)
     {
         $categoria = Category::findOrFail($id);
@@ -53,6 +65,9 @@ class CategoryController extends Controller
         return view('editCategory', compact('categoria', 'categorias'));
     }
 
+    /**
+     * Función para validar y actualizar una categoría existente
+     */
     public function update(Request $request, $id)
     {
         $categoria = Category::findOrFail($id);
@@ -79,6 +94,9 @@ class CategoryController extends Controller
         return redirect()->route('showCategories')->with('success', 'Categoría actualizada correctamente.');
     }
 
+    /**
+     * Función para eliminar una categoría
+     */
     public function destroy($id)
     {
         $categoria = Category::findOrFail($id);

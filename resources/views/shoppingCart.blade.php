@@ -176,7 +176,7 @@
 
             document.querySelectorAll(".cart-row").forEach(row => {
                 const unitPrice = parseFloat(row.dataset.price);
-                const quantityInput = row.querySelector("#quantity-input"); // id duplicado
+                const quantityInput = row.querySelector("#quantity-input");
                 const subtotalEl = row.querySelector(".subtotal");
                 const priceVat = row.querySelector(".price-vat");
 
@@ -240,7 +240,6 @@
                     sendCartUpdate(productId, quantity);
                     updateTotals();
                 } else {
-                    // Eliminar del DOM y del carrito
                     row.remove();
                     sendCartUpdate(productId, 0);
                     updateTotals();
@@ -248,7 +247,7 @@
             });
         });
 
-        updateTotals(); // Inicial
+        updateTotals();
     });
 </script>
 </body>
