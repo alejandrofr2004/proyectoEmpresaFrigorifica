@@ -130,7 +130,6 @@
 
                     <div class="product-actions">
                         <div class="quantity-selector">
-                            <button class="decrement">–</button>
                             <button class="increment">+</button>
                         </div>
                         <a href="{{ route('shopping.cart') }}" class="add-to-cart">
@@ -309,6 +308,7 @@
                 if (!cart[productId]) {
                     if (stock > 0) {
                         cart[productId] = { nombre: productName, price: pricePerKg, quantity: 1, image: imageUrl };
+                        alert(`Producto añadido al carrito`);
                     } else {
                         alert(`No hay stock disponible para ${productName}.`);
                         return;
@@ -316,6 +316,7 @@
                 } else {
                     if (cart[productId].quantity < stock) {
                         cart[productId].quantity += 1;
+                        alert(`Producto añadido al carrito`);
                     } else {
                         alert(`No puedes añadir más unidades de ${productName}. Stock máximo alcanzado.`);
                         return;
@@ -323,26 +324,6 @@
                 }
 
                 await updateCart(productId, cart[productId].quantity, productName, pricePerKg, imageUrl);
-            });
-        });
-
-        document.querySelectorAll(".decrement").forEach(button => {
-            button.addEventListener("click", async () => {
-                const productCard = button.closest(".product-card");
-                const productId = productCard.getAttribute("data-id");
-
-                if (cart[productId]) {
-                    const { nombre, price, image } = cart[productId];
-
-                    if (cart[productId].quantity > 1) {
-                        cart[productId].quantity -= 1;
-                        await updateCart(productId, cart[productId].quantity, nombre, price, image);
-                    } else {
-                        await updateCart(productId, null);
-                        const item = document.querySelector(`.cart-row[data-id='${productId}']`);
-                        if (item) item.remove();
-                    }
-                }
             });
         });
 

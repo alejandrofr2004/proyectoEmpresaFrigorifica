@@ -157,7 +157,8 @@ body {
     margin-top: 30px;
     text-align: center;
     padding: 30px;
-    border: 2px solid #1e81b0;
+    border-top: 2px solid #1e81b0;
+    border-bottom: 2px solid #1e81b0;
 }
 
 .featured-image {
