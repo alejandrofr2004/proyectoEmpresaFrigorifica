@@ -4,6 +4,7 @@
     background-color: #fff;
     color: #333;
     font-size: 18px;
+    min-height: 50vh;
 }
 
 .cart-title {
