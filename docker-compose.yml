@@ -20,11 +20,11 @@ services:
       MYSQL_USER: user_admin
       MYSQL_PASSWORD: 1234abc
     ports:
-      - 3306:3306
+      - 33006:3306
     networks:
       - AlejandroFernandez-network
     volumes:
-      - AlejandroFernandez-data:/var/lib/mysql
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
