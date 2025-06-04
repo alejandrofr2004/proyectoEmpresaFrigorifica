@@ -38,13 +38,14 @@
                         <div class="fs-2">{{ \App\Models\Category::count() }}</div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="text-white small stretched-link" href="#">Gestionar categorías</a>
+                        <a class="text-white small stretched-link" href="{{ route('showCategories') }}">Gestionar categorías</a>
                         <div class="text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
             </div>
 
             {{-- Crear Producto --}}
+            @role('admin')
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card bg-warning text-white h-100">
                     <div class="card-body">
@@ -57,6 +58,8 @@
                     </div>
                 </div>
             </div>
+            @endrole
+
 
             {{-- Placeholder para estadísticas futuras --}}
             <div class="col-xl-3 col-md-6 mb-4">

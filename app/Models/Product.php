@@ -16,5 +16,11 @@ class Product extends Model
     /**
      * Lista de atributos que pueden ser modificados juntos, sólo los editables
      */
-    protected $fillable = ['nombre', 'descripcion', 'precio', 'stock', 'imagen_url'];
+    protected $fillable = ['nombre', 'descripcion', 'precio', 'stock', 'imagen_url', 'categoria_id'];
+
+    public function categoria()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
 }

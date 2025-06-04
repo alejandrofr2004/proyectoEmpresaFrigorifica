@@ -33,7 +33,7 @@
                         <th>Precio</th>
                         <th>Stock</th>
                         <th>Imagen</th>
-                        <th>Id categoría</th>
+                        <th>Nombre categoría</th>
                         @role('admin')
                         <th>Acciones</th>
                         @endrole
@@ -53,7 +53,7 @@
                                     <span class="text-muted">Sin imagen</span>
                                 @endif
                             </td>
-                            <td>{{ $producto->categoria_id }}</td>
+                            <td>{{ $producto->categoria->nombre ?? 'Sin categoría' }}</td>
                             @role('admin')
                             <td>
                                 <a href="{{ route('editProduct', $producto->id) }}" class="btn btn-warning btn-sm" title="Editar">
